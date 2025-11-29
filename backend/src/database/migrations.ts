@@ -148,10 +148,15 @@ const migrations: Migration[] = [
             status TEXT DEFAULT 'processing',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
           )
         `, (err) => {
-          if (err) return reject(err)
+          if (err) {
+            console.error('Ошибка создания таблицы orders:', err)
+            return reject(err)
+          }
+          console.log('✅ Таблица orders создана/проверена')
           resolve()
         })
       })
@@ -231,98 +236,100 @@ const migrations: Migration[] = [
             if (err) return reject(err)
           })
 
-          // Проверяем, есть ли уже данные
-          db.get('SELECT COUNT(*) as count FROM products', [], (err, row: any) => {
-            if (err) {
-              console.error('Ошибка проверки товаров:', err)
-              return resolve()
+          // Добавляем товары (проверяем каждый перед добавлением)
+          const products = [
+            {
+              title: 'Клавиатура mchose jet75',
+              description: 'Высококачественные датчики Холла обеспечивают точное линейное считывание, сверхвысокую чувствительность и исключительную отзывчивость. Идеальна для геймеров и профессионалов.',
+              price: '9000 рублей',
+              category: 'клавиатура',
+              video: '/assets/videos/Распаковка MCHOSE JET75 НЕОЖИДАННО mchose magnetickeyboard keyboard review [get-speed.com].mp4',
+              poster: '/assets/imgs/mchosejet75.webp',
+              image: '/assets/imgs/mchosejet75.webp'
+            },
+            {
+              title: 'Компьютерная мышь mchose k7 ultra',
+              description: 'Сверхлёгкая беспроводная игровая мышь MCHOSE K7 Ultra - это идеальный выбор для тех, кто любит играть в компьютерные игры. Она обладает максимальным разрешением датчика 42000 DPI, что позволяет вам быстро перемещаться по экрану и точно контролировать курсор.',
+              price: '8500 рублей',
+              category: 'компьютерная мышь',
+              video: '/assets/videos/mchosek7.mp4',
+              poster: '/assets/imgs/mchosek7ultra.webp',
+              image: '/assets/imgs/mchosek7ultra.webp'
+            },
+            {
+              title: 'HyperX Cloud Mini 3.5 мм',
+              description: 'Компактные игровые наушники с превосходным звуком и удобной посадкой. Идеальны для длительных игровых сессий благодаря мягким амбушюрам и легкому весу. Совместимы с ПК, консолями и мобильными устройствами.',
+              price: '3500 рублей',
+              category: 'наушники',
+              video: null,
+              poster: '/assets/imgs/hyperx.webp',
+              image: '/assets/imgs/hyperx.webp'
+            },
+            {
+              title: 'Logitech G G435',
+              description: 'Беспроводные игровые наушники с технологией Lightspeed и Bluetooth. Легкие и удобные, с отличным качеством звука и микрофоном. Подходят для игр, музыки и звонков.',
+              price: '4500 рублей',
+              category: 'наушники',
+              video: null,
+              poster: '/assets/imgs/logitechg435.webp',
+              image: '/assets/imgs/logitechg435.webp'
+            },
+            {
+              title: 'Видеокабель HDMI - Type C',
+              description: 'Высококачественный кабель для подключения устройств с USB-C к мониторам и телевизорам с HDMI. Поддерживает разрешение до 4K и передачу звука. Идеален для ноутбуков, планшетов и смартфонов.',
+              price: '1200 рублей',
+              category: 'аксессуары',
+              video: null,
+              poster: '/assets/imgs/hdmirexant.webp',
+              image: '/assets/imgs/hdmirexant.webp'
             }
+          ]
 
-            if (row && row.count > 0) {
-              console.log('⏭️  Товары уже существуют, пропускаем вставку')
-              // Проверяем музыку
-              db.get('SELECT COUNT(*) as count FROM music', [], (err, row: any) => {
-                if (err) {
-                  console.error('Ошибка проверки музыки:', err)
-                  return resolve()
-                }
-                if (row && row.count > 0) {
-                  console.log('⏭️  Музыка уже существует, пропускаем вставку')
-                  return resolve()
-                }
-                insertMusic()
-              })
+          // Добавляем товары последовательно
+          let currentIndex = 0
+          
+          const insertNextProduct = () => {
+            if (currentIndex >= products.length) {
+              console.log(`✅ Все товары обработаны (${products.length})`)
+              insertMusic()
               return
             }
-
-            // Добавляем товары
-            const products = [
-              {
-                title: 'Клавиатура mchose jet75',
-                description: 'Высококачественные датчики Холла обеспечивают точное линейное считывание, сверхвысокую чувствительность и исключительную отзывчивость. Идеальна для геймеров и профессионалов.',
-                price: '9000 рублей',
-                category: 'клавиатура',
-                video: '/assets/videos/Распаковка MCHOSE JET75 НЕОЖИДАННО mchose magnetickeyboard keyboard review [get-speed.com].mp4',
-                poster: '/assets/imgs/mchosejet75.webp',
-                image: '/assets/imgs/mchosejet75.webp'
-              },
-              {
-                title: 'Компьютерная мышь mchose k7 ultra',
-                description: 'Сверхлёгкая беспроводная игровая мышь MCHOSE K7 Ultra - это идеальный выбор для тех, кто любит играть в компьютерные игры. Она обладает максимальным разрешением датчика 42000 DPI, что позволяет вам быстро перемещаться по экрану и точно контролировать курсор.',
-                price: '8500 рублей',
-                category: 'компьютерная мышь',
-                video: '/assets/videos/mchosek7.mp4',
-                poster: '/assets/imgs/mchosek7ultra.webp',
-                image: '/assets/imgs/mchosek7ultra.webp'
-              },
-              {
-                title: 'HyperX Cloud Mini 3.5 мм',
-                description: 'Компактные игровые наушники с превосходным звуком и удобной посадкой. Идеальны для длительных игровых сессий благодаря мягким амбушюрам и легкому весу. Совместимы с ПК, консолями и мобильными устройствами.',
-                price: '3500 рублей',
-                category: 'наушники',
-                video: null,
-                poster: '/assets/imgs/hyperx.webp',
-                image: '/assets/imgs/hyperx.webp'
-              },
-              {
-                title: 'Logitech G G435',
-                description: 'Беспроводные игровые наушники с технологией Lightspeed и Bluetooth. Легкие и удобные, с отличным качеством звука и микрофоном. Подходят для игр, музыки и звонков.',
-                price: '4500 рублей',
-                category: 'наушники',
-                video: null,
-                poster: '/assets/imgs/logitechg435.webp',
-                image: '/assets/imgs/logitechg435.webp'
-              },
-              {
-                title: 'Видеокабель HDMI - Type C',
-                description: 'Высококачественный кабель для подключения устройств с USB-C к мониторам и телевизорам с HDMI. Поддерживает разрешение до 4K и передачу звука. Идеален для ноутбуков, планшетов и смартфонов.',
-                price: '1200 рублей',
-                category: 'аксессуары',
-                video: null,
-                poster: '/assets/imgs/hdmirexant.webp',
-                image: '/assets/imgs/hdmirexant.webp'
+            
+            const product = products[currentIndex]
+            
+            // Проверяем, существует ли товар
+            db.get('SELECT id FROM products WHERE title = ?', [product.title], (err, row: any) => {
+              if (err) {
+                console.error(`Ошибка проверки товара "${product.title}":`, err)
+                currentIndex++
+                insertNextProduct()
+                return
               }
-            ]
-
-            let productsInserted = 0
-            products.forEach((product) => {
-              db.run(
-                'INSERT INTO products (title, description, price, category, video, poster, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                [product.title, product.description, product.price, product.category, product.video, product.poster, product.image],
-                (err) => {
-                  if (err) {
-                    console.error('Ошибка добавления товара:', err)
-                  } else {
-                    console.log(`✅ Товар добавлен: ${product.title}`)
+              
+              if (!row) {
+                // Товара нет, добавляем
+                db.run(
+                  'INSERT INTO products (title, description, price, category, video, poster, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                  [product.title, product.description, product.price, product.category, product.video, product.poster, product.image],
+                  (err) => {
+                    if (err) {
+                      console.error(`Ошибка добавления товара "${product.title}":`, err)
+                    } else {
+                      console.log(`✅ Товар добавлен: ${product.title}`)
+                    }
+                    currentIndex++
+                    insertNextProduct()
                   }
-                  productsInserted++
-                  if (productsInserted === products.length) {
-                    insertMusic()
-                  }
-                }
-              )
+                )
+              } else {
+                console.log(`⏭️  Товар уже существует: ${product.title}`)
+                currentIndex++
+                insertNextProduct()
+              }
             })
-          })
+          }
+          
+          insertNextProduct()
 
           const insertMusic = () => {
             const musicTracks = [
@@ -337,18 +344,6 @@ const migrations: Migration[] = [
                 price: '19 рублей',
                 image: '/assets/imgs/Dora kiut rok.webp',
                 audio: '/assets/audios/Dora - vturilas.mp3'
-              },
-              {
-                title: 'Zivert - Beverly Hills',
-                price: '29 рублей',
-                image: '/assets/imgs/Zivert_Beverly_Hills.webp',
-                audio: '/assets/audios/Zivert - Beverly Hills.mp3'
-              },
-              {
-                title: 'Miyagi & Andy Panda - Minor',
-                price: '39 рублей',
-                image: '/assets/imgs/Miyagi_Minor.webp',
-                audio: '/assets/audios/Miyagi & Andy Panda - Minor.mp3'
               }
             ]
 

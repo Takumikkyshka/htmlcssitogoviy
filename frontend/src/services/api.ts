@@ -31,12 +31,28 @@ class ApiService {
         headers,
       })
 
-      const data = await response.json()
+      let data
+      const contentType = response.headers.get('content-type')
+      
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json()
+      } else {
+        const text = await response.text()
+        console.error('Неожиданный ответ от сервера (не JSON):', text.substring(0, 200))
+        return {
+          error: 'Сервер вернул неожиданный ответ. Проверьте консоль для деталей.',
+        }
+      }
 
       if (!response.ok) {
         return {
           error: data.error || data.message || 'Произошла ошибка',
         }
+      }
+
+      // Если ответ уже содержит data, возвращаем его как есть
+      if (data.data) {
+        return { data: data.data }
       }
 
       return { data }
@@ -112,6 +128,13 @@ class ApiService {
   // Orders endpoints
   async getOrders() {
     return this.request<any[]>('/orders')
+  }
+
+  async createOrder(productId: number, quantity: number = 1, address?: string, cardNumber?: string) {
+    return this.request<any>('/orders', {
+      method: 'POST',
+      body: JSON.stringify({ productId, quantity, address, cardNumber }),
+    })
   }
 
   // Favorites endpoints

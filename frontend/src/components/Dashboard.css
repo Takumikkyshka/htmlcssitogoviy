@@ -20,6 +20,8 @@
     gap: 15px;
     margin-bottom: 25px;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .stat-card {
@@ -216,6 +218,8 @@
     .dashboard-stats {
         grid-template-columns: repeat(3, 1fr);
         gap: 20px;
+        width: 100%;
+        max-width: 100%;
     }
     
     .table-controls {

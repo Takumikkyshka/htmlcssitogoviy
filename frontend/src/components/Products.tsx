@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { apiService } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import BuyModal from './BuyModal'
 import './Products.css'
 
 interface Product {
@@ -24,6 +25,8 @@ function Products() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'name' | 'price'>('name')
   const [favorites, setFavorites] = useState<Set<number>>(new Set())
+  const [buyModalOpen, setBuyModalOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -31,6 +34,7 @@ function Products() {
         const response = await apiService.getProducts()
         if (response.data) {
           setProducts(response.data)
+          console.log('Загружено товаров:', response.data.length)
         }
       } catch (error) {
         console.error('Ошибка загрузки товаров:', error)
@@ -43,18 +47,16 @@ function Products() {
     fetchProducts()
   }, [])
 
+  // Синхронизация с URL параметрами
   useEffect(() => {
-    // Проверяем URL параметры при монтировании и изменении location
     const urlParams = new URLSearchParams(location.search)
-    const urlSearch = urlParams.get('search')
-    const urlCategory = urlParams.get('category')
+    const urlSearch = urlParams.get('search') || ''
+    const urlCategory = urlParams.get('category') || 'all'
+    const urlSort = (urlParams.get('sort') || 'name') as 'name' | 'price'
     
-    if (urlSearch !== null) {
-      setSearchQuery(urlSearch)
-    }
-    if (urlCategory !== null) {
-      setSelectedCategory(urlCategory)
-    }
+    setSearchQuery(urlSearch)
+    setSelectedCategory(urlCategory)
+    setSortBy(urlSort)
   }, [location.search])
 
   useEffect(() => {
@@ -99,22 +101,66 @@ function Products() {
     }
   }
 
+  const handleBuyClick = (product: Product) => {
+    if (!isAuthenticated) {
+      alert('Войдите в аккаунт, чтобы купить товар')
+      return
+    }
+    setSelectedProduct(product)
+    setBuyModalOpen(true)
+  }
+
+  const handleBuyConfirm = async (address: string, cardNumber: string) => {
+    if (!selectedProduct) return
+
+    try {
+      const response = await apiService.createOrder(selectedProduct.id, 1, address, cardNumber)
+      console.log('Ответ от сервера:', response)
+      if (response.error) {
+        alert(`Ошибка: ${response.error}`)
+      } else if (response.data) {
+        alert('Заказ успешно оформлен!')
+        setBuyModalOpen(false)
+        setSelectedProduct(null)
+      } else {
+        alert('Заказ успешно оформлен!')
+        setBuyModalOpen(false)
+        setSelectedProduct(null)
+      }
+    } catch (error: any) {
+      console.error('Ошибка покупки товара:', error)
+      const errorMessage = error?.response?.data?.error || error?.message || 'Произошла ошибка при оформлении заказа'
+      alert(`Ошибка: ${errorMessage}`)
+    }
+  }
+
   // Фильтрация и сортировка
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = [...products]
 
+    console.log('Всего товаров:', products.length)
+    console.log('Поисковый запрос:', searchQuery)
+    console.log('Выбранная категория:', selectedCategory)
+    console.log('Сортировка:', sortBy)
+
     // Поиск
     if (searchQuery && searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim()
-      filtered = filtered.filter(p => 
-        (p.title && p.title.toLowerCase().includes(query)) ||
-        (p.description && p.description.toLowerCase().includes(query))
-      )
+      filtered = filtered.filter(p => {
+        const titleMatch = p.title?.toLowerCase().includes(query) || false
+        const descMatch = p.description?.toLowerCase().includes(query) || false
+        return titleMatch || descMatch
+      })
+      console.log('После поиска осталось:', filtered.length)
     }
 
     // Фильтр по категории
     if (selectedCategory && selectedCategory !== 'all') {
-      filtered = filtered.filter(p => p.category === selectedCategory)
+      filtered = filtered.filter(p => {
+        const match = p.category === selectedCategory
+        return match
+      })
+      console.log('После фильтрации по категории осталось:', filtered.length)
     }
 
     // Сортировка
@@ -128,10 +174,9 @@ function Products() {
       }
     })
 
+    console.log('Итого отфильтровано:', sorted.length)
     return sorted
   }, [products, searchQuery, selectedCategory, sortBy])
-
-  const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean)))
 
   if (loading) {
     return (
@@ -147,76 +192,6 @@ function Products() {
   return (
     <section className="products">
       <h2 id="popular">Популярные товары</h2>
-
-      {/* Поиск и фильтры */}
-      <div className="products-filters" style={{ 
-        padding: '20px', 
-        background: 'rgba(255, 255, 255, 0.1)', 
-        backdropFilter: 'blur(10px)',
-        borderRadius: '15px',
-        marginBottom: '20px',
-        maxWidth: '1200px',
-        margin: '0 auto 20px'
-      }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-          <input
-            type="text"
-            placeholder="Поиск товаров..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              padding: '12px',
-              borderRadius: '8px',
-              border: '2px solid rgba(30, 144, 255, 0.3)',
-              fontSize: '1rem'
-            }}
-          />
-          <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', alignItems: 'center' }}>
-            <select
-              value={selectedCategory}
-              onChange={(e) => {
-                setSelectedCategory(e.target.value)
-                // Обновляем URL
-                const url = new URL(window.location.href)
-                if (e.target.value !== 'all') {
-                  url.searchParams.set('category', e.target.value)
-                } else {
-                  url.searchParams.delete('category')
-                }
-                window.history.pushState({}, '', url.toString())
-              }}
-              style={{
-                padding: '10px',
-                borderRadius: '8px',
-                border: '2px solid rgba(30, 144, 255, 0.3)',
-                fontSize: '0.9rem',
-                minWidth: '150px'
-              }}
-            >
-              <option value="all">Все категории</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-            <select
-              value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value as 'name' | 'price')
-              }}
-              style={{
-                padding: '10px',
-                borderRadius: '8px',
-                border: '2px solid rgba(30, 144, 255, 0.3)',
-                fontSize: '0.9rem',
-                minWidth: '150px'
-              }}
-            >
-              <option value="name">По названию</option>
-              <option value="price">По цене</option>
-            </select>
-          </div>
-        </div>
-      </div>
 
       <div>
         {filteredAndSortedProducts.length > 0 ? (
@@ -252,10 +227,14 @@ function Products() {
                 <video width="320" height="240" controls poster={product.poster}>
                   <source src={product.video} type="video/mp4" />
                 </video>
-              ) : product.image ? (
+              ) : product.image || product.poster ? (
                 <img 
-                  src={product.image} 
+                  src={product.image || product.poster} 
                   alt={product.title}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.style.display = 'none'
+                  }}
                   style={{
                     width: '100%',
                     height: '240px',
@@ -270,16 +249,30 @@ function Products() {
               <p>{product.description}</p>
               <div className="costbutton">
                 <b>{product.price}</b>
-                <button>Купить</button>
+                <button onClick={() => handleBuyClick(product)}>Купить</button>
               </div>
             </article>
           ))
         ) : (
           <div style={{ textAlign: 'center', padding: '40px', color: 'white' }}>
-            Товары не найдены
+            {searchQuery || selectedCategory !== 'all' 
+              ? 'Товары не найдены по заданным критериям' 
+              : 'Товары не найдены'}
           </div>
         )}
       </div>
+
+      {selectedProduct && (
+        <BuyModal
+          product={selectedProduct}
+          isOpen={buyModalOpen}
+          onClose={() => {
+            setBuyModalOpen(false)
+            setSelectedProduct(null)
+          }}
+          onConfirm={handleBuyConfirm}
+        />
+      )}
     </section>
   )
 }

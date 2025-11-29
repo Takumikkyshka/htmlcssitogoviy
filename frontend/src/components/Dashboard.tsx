@@ -107,13 +107,34 @@ function Dashboard() {
     return sorted
   }, [orders, filterStatus, sortBy, sortOrder])
 
+  // Группировка заказов по месяцам для графиков
+  const monthlyData = useMemo(() => {
+    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+    const salesByMonth: number[] = new Array(12).fill(0)
+    const ordersByMonth: number[] = new Array(12).fill(0)
+
+    orders.forEach(order => {
+      const date = new Date(order.date)
+      const month = date.getMonth()
+      salesByMonth[month] += order.price * order.quantity
+      ordersByMonth[month] += 1
+    })
+
+    // Берем последние 6 месяцев с данными
+    const last6Months = months.slice(-6)
+    const last6Sales = salesByMonth.slice(-6)
+    const last6Orders = ordersByMonth.slice(-6)
+
+    return { labels: last6Months, sales: last6Sales, orders: last6Orders }
+  }, [orders])
+
   // Данные для графиков
   const salesData = {
-    labels: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь'],
+    labels: monthlyData.labels,
     datasets: [
       {
         label: 'Продажи (руб.)',
-        data: [17500, 26500, 18000, 22000, 19000, 24000],
+        data: monthlyData.sales,
         borderColor: '#1E90FF',
         backgroundColor: 'rgba(30, 144, 255, 0.1)',
         tension: 0.4,
@@ -122,11 +143,11 @@ function Dashboard() {
   }
 
   const ordersData = {
-    labels: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь'],
+    labels: monthlyData.labels,
     datasets: [
       {
         label: 'Количество заказов',
-        data: [2, 4, 3, 5, 4, 6],
+        data: monthlyData.orders,
         backgroundColor: 'rgba(30, 144, 255, 0.6)',
         borderColor: '#1E90FF',
         borderWidth: 2,

@@ -1,0 +1,187 @@
+.buy-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.buy-modal-content {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.buy-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  line-height: 1;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+  z-index: 10;
+}
+
+.buy-modal-close:hover {
+  color: #000;
+}
+
+.buy-modal-content h2 {
+  margin: 0 0 20px 0;
+  margin-top: 10px;
+  color: #333;
+  font-size: 24px;
+  padding-right: 30px;
+}
+
+.buy-modal-product {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.buy-modal-product h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.buy-modal-price {
+  margin: 0;
+  color: #1E90FF;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.buy-modal-field {
+  margin-bottom: 20px;
+}
+
+.buy-modal-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.buy-modal-field input,
+.buy-modal-field textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.buy-modal-field input:focus,
+.buy-modal-field textarea:focus {
+  outline: none;
+  border-color: #1E90FF;
+}
+
+.buy-modal-field input.error,
+.buy-modal-field textarea.error {
+  border-color: #dc3545;
+}
+
+.error-message {
+  display: block;
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.buy-modal-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.buy-modal-cancel,
+.buy-modal-submit {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buy-modal-cancel {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.buy-modal-cancel:hover {
+  background: #e0e0e0;
+}
+
+.buy-modal-submit {
+  background: #1E90FF;
+  color: white;
+}
+
+.buy-modal-submit:hover {
+  background: #1873CC;
+}
+
+@media (max-width: 600px) {
+  .buy-modal-content {
+    padding: 20px;
+    width: 95%;
+  }
+  
+  .buy-modal-actions {
+    flex-direction: column;
+  }
+}
+

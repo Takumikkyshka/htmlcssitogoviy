@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import { initDatabase } from './database/init'
 import { runMigrations } from './database/migrations'
+import { resetDatabase } from './database/reset'
 import authRoutes from './routes/authRoutes'
 import postsRoutes from './routes/postsRoutes'
 import productsRoutes from './routes/productsRoutes'
@@ -24,6 +25,15 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// Удаляем старую базу данных при запуске (только в development)
+if (process.env.NODE_ENV !== 'production' && process.argv.includes('--reset-db')) {
+  try {
+    resetDatabase()
+  } catch (error) {
+    console.log('⚠️  Не удалось удалить базу данных (возможно, она используется)')
+  }
+}
 
 // Инициализация базы данных
 initDatabase().then(() => {
