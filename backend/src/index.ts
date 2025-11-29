@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import { initDatabase } from './database/init'
+import { runMigrations } from './database/migrations'
 
 dotenv.config()
 
@@ -19,7 +20,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // Инициализация базы данных
-initDatabase()
+initDatabase().then(() => {
+  // Запуск миграций после инициализации
+  runMigrations()
+}).catch((err) => {
+  console.error('Ошибка инициализации БД:', err)
+})
 
 // Базовый маршрут
 app.get('/', (req, res) => {
