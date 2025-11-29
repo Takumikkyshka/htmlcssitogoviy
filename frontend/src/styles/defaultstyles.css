@@ -275,7 +275,29 @@ header {
     background: linear-gradient(135deg, #1E90FF, #00BFFF);
     color: white;
     border-color: #1E90FF;
-    box-shadow: 0 4px 15px rgba(30, 144, 255, 0.4);
+}
+
+/* Стили для кнопок авторизации */
+.nav-links button.links {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.user-info {
+    color: #4a90e2;
+    font-weight: 600;
+}
+
+.logout-btn {
+    color: #e74c3c;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
 }
 
 /* Разделители */

@@ -18,13 +18,13 @@ export const authenticateToken = (
     return res.status(401).json({ error: 'Токен доступа не предоставлен' })
   }
 
-  const payload = verifyToken(token)
-  if (!payload) {
-    return res.status(403).json({ error: 'Недействительный токен' })
+  try {
+    const payload = verifyToken(token) as { id: number; email: string }
+    req.userId = payload.id
+    req.userEmail = payload.email
+    next()
+  } catch (error) {
+    return res.status(403).json({ error: 'Недействительный или истекший токен' })
   }
-
-  req.userId = payload.userId
-  req.userEmail = payload.email
-  next()
 }
 

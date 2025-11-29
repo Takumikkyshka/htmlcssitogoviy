@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 const JWT_SECRET = process.env.JWT_SECRET || 'blueberries-secret-key-2024'
 
 export interface TokenPayload {
-  userId: number
+  id: number
   email: string
 }
 

@@ -72,7 +72,7 @@ export const register = async (req: RegisterRequest, res: Response) => {
 
             // Генерация токена
             const token = generateToken({
-              userId: this.lastID,
+              id: this.lastID,
               email: email
             })
 
@@ -128,7 +128,7 @@ export const login = async (req: LoginRequest, res: Response) => {
 
         // Генерация токена
         const token = generateToken({
-          userId: row.id,
+          id: row.id,
           email: row.email
         })
 

@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import { initDatabase } from './database/init'
 import { runMigrations } from './database/migrations'
 import authRoutes from './routes/authRoutes'
+import postsRoutes from './routes/postsRoutes'
 
 dotenv.config()
 
@@ -44,6 +45,7 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes)
+app.use('/api/posts', postsRoutes)
 
 // Запуск сервера
 app.listen(PORT, () => {
