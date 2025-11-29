@@ -5,6 +5,7 @@ import SearchSection from './components/SearchSection'
 import Products from './components/Products'
 import MusicSection from './components/MusicSection'
 import Map from './components/Map'
+import Dashboard from './components/Dashboard'
 import Footer from './components/Footer'
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
               <Map />
             </>
           } />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
       <Footer />
