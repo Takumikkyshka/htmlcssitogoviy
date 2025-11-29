@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { smoothScrollTo } from '../utils/smoothScroll'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
@@ -7,6 +7,7 @@ import './Header.css'
 
 function Header() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { isAuthenticated, user, logout } = useAuth()
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login')
@@ -15,6 +16,12 @@ function Header() {
     if (location.pathname === '/') {
       e.preventDefault()
       smoothScrollTo(anchor, 100)
+    } else {
+      e.preventDefault()
+      navigate('/')
+      setTimeout(() => {
+        smoothScrollTo(anchor, 100)
+      }, 100)
     }
   }
 

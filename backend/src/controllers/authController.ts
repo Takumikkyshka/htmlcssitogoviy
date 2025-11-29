@@ -67,12 +67,18 @@ export const register = async (req: RegisterRequest, res: Response) => {
           function(err) {
             if (err) {
               console.error('Ошибка создания пользователя:', err)
-              return res.status(500).json({ error: 'Ошибка создания пользователя' })
+              // Проверяем тип ошибки
+              if (err.message && err.message.includes('UNIQUE constraint failed')) {
+                return res.status(409).json({ error: 'Пользователь с таким email уже существует' })
+              }
+              return res.status(500).json({ error: `Ошибка создания пользователя: ${err.message}` })
             }
+
+            const userId = this.lastID
 
             // Генерация токена
             const token = generateToken({
-              id: this.lastID,
+              id: userId,
               email: email
             })
 
@@ -80,7 +86,7 @@ export const register = async (req: RegisterRequest, res: Response) => {
               message: 'Пользователь успешно зарегистрирован',
               token,
               user: {
-                id: this.lastID,
+                id: userId,
                 email,
                 name: name || null
               }

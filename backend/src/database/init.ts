@@ -30,10 +30,9 @@ export const initDatabase = () => {
       `, (err) => {
         if (err) {
           console.error('Ошибка создания таблицы users:', err.message)
-          reject(err)
-        } else {
-          console.log('✅ Таблица users создана/проверена')
+          return reject(err)
         }
+        console.log('✅ Таблица users создана/проверена')
       })
 
       // Таблица отзывов/товаров (posts)

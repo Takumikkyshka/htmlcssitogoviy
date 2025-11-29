@@ -108,6 +108,33 @@ class ApiService {
       method: 'DELETE',
     })
   }
+
+  // Orders endpoints
+  async getOrders() {
+    return this.request<any[]>('/orders')
+  }
+
+  // Favorites endpoints
+  async getFavorites() {
+    return this.request<any[]>('/favorites')
+  }
+
+  async addToFavorites(productId: number) {
+    return this.request<{ message: string }>('/favorites', {
+      method: 'POST',
+      body: JSON.stringify({ productId }),
+    })
+  }
+
+  async removeFromFavorites(productId: number) {
+    return this.request<{ message: string }>(`/favorites/${productId}`, {
+      method: 'DELETE',
+    })
+  }
+
+  async checkFavorite(productId: number) {
+    return this.request<{ isFavorite: boolean }>(`/favorites/check/${productId}`)
+  }
 }
 
 export const apiService = new ApiService()

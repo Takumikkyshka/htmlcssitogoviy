@@ -19,6 +19,7 @@
     grid-template-columns: 1fr;
     gap: 15px;
     margin-bottom: 25px;
+    width: 100%;
 }
 
 .stat-card {
@@ -78,6 +79,8 @@
 .chart-container {
     position: relative;
     height: 250px;
+    width: 100%;
+    min-height: 250px;
 }
 
 .dashboard-table-section {
@@ -211,7 +214,8 @@
 /* Адаптивность */
 @media (min-width: 480px) {
     .dashboard-stats {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
     }
     
     .table-controls {

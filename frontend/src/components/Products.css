@@ -171,6 +171,11 @@
     box-shadow: 0 6px 20px rgba(30, 144, 255, 0.5);
 }
 
+.favorite-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
 /* Анимации для карточек */
 .products article:nth-child(1) { animation-delay: 0.1s; }
 .products article:nth-child(2) { animation-delay: 0.2s; }

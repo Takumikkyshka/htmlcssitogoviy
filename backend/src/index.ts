@@ -7,6 +7,8 @@ import authRoutes from './routes/authRoutes'
 import postsRoutes from './routes/postsRoutes'
 import productsRoutes from './routes/productsRoutes'
 import musicRoutes from './routes/musicRoutes'
+import ordersRoutes from './routes/ordersRoutes'
+import favoritesRoutes from './routes/favoritesRoutes'
 
 dotenv.config()
 
@@ -26,7 +28,11 @@ app.use(express.urlencoded({ extended: true }))
 // Инициализация базы данных
 initDatabase().then(() => {
   // Запуск миграций после инициализации
-  runMigrations()
+  runMigrations().then(() => {
+    console.log('✅ Все миграции выполнены')
+  }).catch((err) => {
+    console.error('Ошибка выполнения миграций:', err)
+  })
 }).catch((err) => {
   console.error('Ошибка инициализации БД:', err)
 })
@@ -50,6 +56,8 @@ app.use('/api/auth', authRoutes)
 app.use('/api/posts', postsRoutes)
 app.use('/api/products', productsRoutes)
 app.use('/api/music', musicRoutes)
+app.use('/api/orders', ordersRoutes)
+app.use('/api/favorites', favoritesRoutes)
 
 // Запуск сервера
 app.listen(PORT, () => {

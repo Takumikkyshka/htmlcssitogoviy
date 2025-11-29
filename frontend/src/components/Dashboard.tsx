@@ -1,4 +1,6 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,6 +14,7 @@ import {
   Legend,
 } from 'chart.js'
 import { Line, Bar, Doughnut } from 'react-chartjs-2'
+import { apiService } from '../services/api'
 import './Dashboard.css'
 
 ChartJS.register(
@@ -36,15 +39,42 @@ interface Order {
 }
 
 function Dashboard() {
-  // Данные для демонстрации
-  const [orders] = useState<Order[]>([
-    { id: 1, date: '2024-01-15', product: 'Клавиатура mchose jet75', price: 9000, status: 'completed', quantity: 1 },
-    { id: 2, date: '2024-01-20', product: 'Компьютерная мышь mchose k7 ultra', price: 8500, status: 'completed', quantity: 2 },
-    { id: 3, date: '2024-02-01', product: 'Дора - Кьют рок', price: 19, status: 'processing', quantity: 1 },
-    { id: 4, date: '2024-02-05', product: 'Клавиатура mchose jet75', price: 9000, status: 'completed', quantity: 1 },
-    { id: 5, date: '2024-02-10', product: 'Дора - Втюрилась', price: 19, status: 'cancelled', quantity: 1 },
-    { id: 6, date: '2024-02-15', product: 'Компьютерная мышь mchose k7 ultra', price: 8500, status: 'completed', quantity: 1 },
-  ])
+  const { isAuthenticated } = useAuth()
+  const navigate = useNavigate()
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/')
+      return
+    }
+
+    const fetchOrders = async () => {
+      try {
+        const response = await apiService.getOrders()
+        if (response.data) {
+          // Преобразуем данные из API в формат Order
+          const formattedOrders: Order[] = response.data.map((order: any) => ({
+            id: order.id,
+            date: order.created_at ? new Date(order.created_at).toISOString().split('T')[0] : order.date,
+            product: order.product_title || order.product,
+            price: typeof order.price === 'string' ? parseFloat(order.price.replace(/[^\d.]/g, '')) : order.price,
+            status: order.status || 'processing',
+            quantity: order.quantity || 1
+          }))
+          setOrders(formattedOrders)
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки заказов:', error)
+        setOrders([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchOrders()
+  }, [isAuthenticated, navigate])
 
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'date' | 'price' | 'product'>('date')
@@ -162,7 +192,7 @@ function Dashboard() {
         },
       },
     },
-  }
+  } as const
 
   const doughnutOptions = {
     responsive: true,
@@ -179,7 +209,7 @@ function Dashboard() {
         },
       },
     },
-  }
+  } as const
 
   const totalSpent = orders
     .filter(o => o.status === 'completed')
@@ -187,6 +217,21 @@ function Dashboard() {
 
   const totalOrders = orders.length
   const completedOrders = orders.filter(o => o.status === 'completed').length
+
+  if (!isAuthenticated) {
+    return null
+  }
+
+  if (loading) {
+    return (
+      <section className="dashboard-section">
+        <h2>Личный кабинет</h2>
+        <div style={{ textAlign: 'center', padding: '40px', color: 'white' }}>
+          Загрузка данных...
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="dashboard-section">
@@ -252,25 +297,24 @@ function Dashboard() {
           </div>
 
           <div className="sort-group">
-            <label htmlFor="sort-by">Сортировать по:</label>
+            <label htmlFor="sort-select">Сортировка:</label>
             <select
-              id="sort-by"
+              id="sort-select"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'date' | 'price' | 'product')}
               className="sort-select"
             >
-              <option value="date">Дате</option>
-              <option value="price">Цене</option>
-              <option value="product">Товару</option>
+              <option value="date">По дате</option>
+              <option value="product">По товару</option>
+              <option value="price">По цене</option>
             </select>
+            <button
+              className="sort-order-button"
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+            >
+              {sortOrder === 'asc' ? '↑' : '↓'}
+            </button>
           </div>
-
-          <button
-            className="sort-order-button"
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-          >
-            {sortOrder === 'asc' ? '↑' : '↓'} {sortOrder === 'asc' ? 'По возрастанию' : 'По убыванию'}
-          </button>
         </div>
 
         {/* Таблица */}
@@ -278,7 +322,6 @@ function Dashboard() {
           <table className="dashboard-table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Дата</th>
                 <th>Товар</th>
                 <th>Количество</th>
@@ -287,22 +330,28 @@ function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {filteredAndSortedOrders.map((order) => (
-                <tr key={order.id}>
-                  <td>{order.id}</td>
-                  <td>{new Date(order.date).toLocaleDateString('ru-RU')}</td>
-                  <td>{order.product}</td>
-                  <td>{order.quantity}</td>
-                  <td>{order.price.toLocaleString('ru-RU')} ₽</td>
-                  <td>
-                    <span className={`status-badge status-${order.status}`}>
-                      {order.status === 'completed' && 'Завершено'}
-                      {order.status === 'processing' && 'В обработке'}
-                      {order.status === 'cancelled' && 'Отменено'}
-                    </span>
+              {filteredAndSortedOrders.length > 0 ? (
+                filteredAndSortedOrders.map((order) => (
+                  <tr key={order.id}>
+                    <td>{order.date}</td>
+                    <td>{order.product}</td>
+                    <td>{order.quantity}</td>
+                    <td>{order.price.toLocaleString('ru-RU')} ₽</td>
+                    <td>
+                      <span className={`status-badge status-${order.status}`}>
+                        {order.status === 'completed' ? 'Завершено' : 
+                         order.status === 'processing' ? 'В обработке' : 'Отменено'}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>
+                    Заказы не найдены
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -312,4 +361,3 @@ function Dashboard() {
 }
 
 export default Dashboard
-
