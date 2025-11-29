@@ -1,9 +1,13 @@
-/* Глобальные стили и сброс */
+/* Глобальные стили и сброс - Mobile First */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-size: 16px;
+}
+
+/* Базовый размер шрифта для мобильных */
+html {
+    font-size: 14px;
 }
 
 /* Красивый градиентный фон для всего сайта */
@@ -98,29 +102,28 @@ body::before {
     text-align: center;
 }
 
-/* Компактная навигация */
+/* Компактная навигация - Mobile First */
 header {
     background: transparent;
     backdrop-filter: blur(25px);
     box-shadow: none;
     animation: fadeInUp 0.6s ease;
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 1000;
-    padding: 10px 0;
+    padding: 8px 0;
 }
 
 .nav-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
     align-items: center;
-    padding: 0 30px;
-    max-width: 1400px;
+    padding: 0 15px;
     margin: 0 auto;
 }
 
 .nav-logo img {
-    width: 50px;
+    width: 40px;
     height: auto;
     transition: transform 0.3s ease;
 }
@@ -131,14 +134,15 @@ header {
 
 .nav-links {
     display: flex;
-    gap: 15px;
+    gap: 8px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .links {
     text-decoration: none;
     font-weight: 600;
-    padding: 8px 15px;
+    padding: 6px 12px;
     border-radius: 8px;
     transition: all 0.3s ease;
     position: relative;
@@ -147,6 +151,7 @@ header {
     background: rgba(255, 255, 255, 0.9);
     border: 2px solid rgba(30, 144, 255, 0.3);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 0.85rem;
 }
 
 .links::before {
@@ -168,24 +173,25 @@ header {
     justify-content: center;
 }
 
-/* Баннер распродажи */
+/* Баннер распродажи - Mobile First */
 .promo-banner {
     background: transparent;
     backdrop-filter: blur(25px);
-    padding: 20px;
+    padding: 15px 10px;
     text-align: center;
     animation: fadeInUp 0.8s ease;
     box-shadow: none;
 }
 
 .promo-text {
-    font-size: 36px;
+    font-size: 1.5rem;
     font-weight: 800;
     text-decoration: none;
     transition: all 0.3s ease;
     color: white;
     text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
     display: inline-block;
+    line-height: 1.3;
 }
 
 .promo-text:hover {
@@ -193,11 +199,11 @@ header {
     text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* Секция поиска */
+/* Секция поиска - Mobile First */
 .search-section {
     background: transparent;
     backdrop-filter: blur(25px);
-    padding: 25px 20px;
+    padding: 15px 10px;
     animation: fadeInUp 1s ease;
 }
 
@@ -227,35 +233,35 @@ header {
     }
 }
 
-/* Поисковая строка */
+/* Поисковая строка - Mobile First */
 .search-container {
     display: flex;
     justify-content: center;
-    padding: 10px 0 20px 0;
+    padding: 8px 0 15px 0;
 }
 
 .search-box {
     display: flex;
     width: 100%;
-    max-width: 600px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    border-radius: 30px;
+    max-width: 100%;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 25px;
     overflow: hidden;
     background: white;
     transition: all 0.3s ease;
 }
 
 .search-box:focus-within {
-    box-shadow: 0 8px 32px rgba(30, 144, 255, 0.3);
-    transform: scale(1.02);
+    box-shadow: 0 6px 24px rgba(30, 144, 255, 0.3);
+    transform: scale(1.01);
 }
 
 .search-input {
     flex-grow: 1;
-    padding: 15px 20px;
+    padding: 12px 15px;
     border: none;
     outline: none;
-    font-size: 16px;
+    font-size: 0.9rem;
     background: white;
 }
 
@@ -263,12 +269,13 @@ header {
     background: linear-gradient(135deg, #1E90FF, #00BFFF);
     color: white;
     border: none;
-    padding: 0 20px;
+    padding: 0 15px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 50px;
 }
 
 .search-button:hover {
@@ -289,11 +296,11 @@ header {
     transition: transform 0.3s ease;
 }
 
-/* Категории поиска */
+/* Категории поиска - Mobile First */
 .search-categories {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 8px;
     margin-top: 10px;
     flex-wrap: wrap;
     animation: fadeInUp 1.2s ease;
@@ -302,14 +309,14 @@ header {
 .category-tag {
     background: rgba(255, 255, 255, 0.9);
     color: #1E90FF;
-    padding: 8px 18px;
-    border-radius: 25px;
-    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
 }
 
@@ -320,41 +327,43 @@ header {
     box-shadow: 0 6px 20px rgba(30, 144, 255, 0.4);
 }
 
-/* Секция товаров */
+/* Секция товаров - Mobile First */
 .products {
-    margin-top: 30px;
+    margin-top: 20px;
     animation: fadeInUp 1.4s ease;
 }
 
 .products > div {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 15px;
     flex-wrap: wrap;
-    padding: 30px;
+    padding: 15px 10px;
 }
 
 .products > h2 {
     text-align: center;
     color: white;
-    margin-bottom: 30px;
-    font-size: 42px;
+    margin-bottom: 20px;
+    font-size: 1.75rem;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
     font-weight: 700;
     animation: fadeInUp 1.6s ease;
+    padding: 0 10px;
 }
 
 .products article {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    padding: 20px;
-    width: 320px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    width: 100%;
+    max-width: 300px;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    min-height: 550px;
-    max-height: 650px;
+    min-height: auto;
+    max-height: none;
     display: flex;
     flex-direction: column;
     animation: fadeInUp 1.8s ease;
@@ -386,28 +395,28 @@ header {
 }
 
 .products video {
-    border-radius: 15px;
-    margin-bottom: 15px;
+    border-radius: 12px;
+    margin-bottom: 12px;
     width: 100%;
-    height: 200px;
+    height: 180px;
     object-fit: cover;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
     position: relative;
     z-index: 1;
 }
 
 .products article:hover video {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 .products h4 {
     color: #333;
-    font-size: 18px;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    margin-bottom: 8px;
     font-weight: 600;
-    min-height: 54px;
-    max-height: 54px;
+    min-height: 48px;
+    max-height: 48px;
     text-align: center;
     position: relative;
     z-index: 1;
@@ -418,9 +427,9 @@ header {
 }
 
 .products p {
-    margin: 10px 15px;
+    margin: 8px 10px;
     color: #666;
-    line-height: 1.5;
+    line-height: 1.4;
     position: relative;
     z-index: 1;
     flex: 1;
@@ -429,14 +438,14 @@ header {
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
-    font-size: 14px;
+    font-size: 0.85rem;
 }
 
 .products b {
     color: #1E90FF;
-    font-size: 22px;
+    font-size: 1.15rem;
     display: block;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     font-weight: 700;
     position: relative;
     z-index: 1;
@@ -454,14 +463,14 @@ header {
     background: linear-gradient(135deg, #1E90FF, #00BFFF);
     color: white;
     border: none;
-    padding: 14px 30px;
-    border-radius: 25px;
-    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     width: 100%;
-    box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);
+    box-shadow: 0 3px 12px rgba(30, 144, 255, 0.3);
     position: relative;
     overflow: hidden;
 }
@@ -490,29 +499,30 @@ header {
     box-shadow: 0 6px 20px rgba(30, 144, 255, 0.5);
 }
 
-/* Секция музыки */
+/* Секция музыки - Mobile First */
 .music-section {
-    padding: 40px 30px;
+    padding: 20px 10px;
     animation: fadeInUp 2s ease;
 }
 
 .music-section h2 {
     text-align: center;
     color: white;
-    margin-bottom: 30px;
-    font-size: 42px;
+    margin-bottom: 20px;
+    font-size: 1.75rem;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
     font-weight: 700;
+    padding: 0 10px;
 }
 
 .music-promo {
     background: linear-gradient(135deg, rgba(20, 50, 100, 0.95), rgba(50, 30, 80, 0.95));
     color: white;
-    padding: 35px;
-    border-radius: 20px;
+    padding: 20px 15px;
+    border-radius: 15px;
     text-align: center;
-    margin-bottom: 30px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    margin-bottom: 20px;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255, 255, 255, 0.4);
     animation: pulse 3s ease-in-out infinite;
@@ -546,27 +556,28 @@ header {
 }
 
 .music-promo b {
-    font-size: 28px;
+    font-size: 1.15rem;
     display: block;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.3);
     color: #ffffff;
     font-weight: 800;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
 }
 
 .music-promo button {
     color: #1E90FF;
     background: rgba(255, 255, 255, 0.95);
     border: 2px solid white;
-    padding: 14px 30px;
-    border-radius: 25px;
-    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
 }
 
 .music-promo button:hover {
@@ -579,20 +590,22 @@ header {
 .music-tracks {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 15px;
     flex-wrap: wrap;
 }
 
 .music-section article {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    padding: 20px;
-    width: 280px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    width: 100%;
+    max-width: 280px;
     transition: all 0.4s ease;
     text-align: center;
-    height: 350px;
+    min-height: auto;
+    height: auto;
     display: flex;
     flex-direction: column;
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -604,25 +617,25 @@ header {
 }
 
 .music-section img {
-    border-radius: 15px;
-    margin-bottom: 15px;
+    border-radius: 12px;
+    margin-bottom: 12px;
     width: 100%;
-    height: 180px;
+    height: 160px;
     object-fit: cover;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
 }
 
 .music-section article:hover img {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 .music-section h4 {
     color: #333;
-    font-size: 16px;
-    margin-bottom: 15px;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
     font-weight: 600;
-    min-height: 40px;
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -630,19 +643,19 @@ header {
 
 .music-section audio {
     width: 100%;
-    margin-bottom: 15px;
-    border-radius: 25px;
+    margin-bottom: 12px;
+    border-radius: 20px;
     background-color: #f0f8ff;
 }
 
 .music-section b, .music-section a {
     color: #1E90FF;
-    font-size: 18px;
+    font-size: 0.9rem;
     text-decoration: none;
     font-weight: 600;
     display: block;
     margin-top: auto;
-    padding: 10px;
+    padding: 8px;
     border-radius: 8px;
     transition: all 0.3s ease;
 }
@@ -652,9 +665,9 @@ header {
     transform: scale(1.05);
 }
 
-/* Футер */
+/* Футер - Mobile First */
 .footer {
-    padding: 40px 30px;
+    padding: 20px 15px;
     background: transparent;
     backdrop-filter: blur(25px);
     animation: fadeInUp 2.2s ease;
@@ -663,25 +676,25 @@ header {
 .footer-feedback {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    padding: 30px;
-    margin-bottom: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 20px 15px;
+    margin-bottom: 20px;
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .footer-title {
     color: #1E90FF;
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 1.25rem;
+    margin-bottom: 15px;
     text-align: center;
     font-weight: 700;
 }
 
 .footer-main-title {
     color: white;
-    font-size: 32px;
-    margin-bottom: 30px;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
     text-align: center;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
     font-weight: 700;
@@ -737,19 +750,19 @@ header {
 
 .footer-content {
     display: flex;
-    justify-content: space-between;
-    gap: 30px;
+    flex-direction: column;
+    gap: 15px;
     flex-wrap: wrap;
 }
 
 .footer-card {
     flex: 1;
-    min-width: 250px;
+    width: 100%;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 15px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     transition: all 0.3s ease;
 }
@@ -780,8 +793,8 @@ header {
 
 .footer-subtitle {
     color: #1E90FF;
-    font-size: 18px;
-    margin-bottom: 15px;
+    font-size: 1rem;
+    margin-bottom: 12px;
     font-weight: 600;
 }
 
@@ -833,62 +846,336 @@ header {
     box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);
 }
 
-/* Адаптивность для мобильных устройств */
-@media (max-width: 768px) {
+/* Медиа-запросы для больших экранов - Mobile First подход */
+
+/* Планшеты (от 480px) */
+@media (min-width: 480px) {
+    html {
+        font-size: 15px;
+    }
+    
     .nav-container {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px 20px;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+    
+    .nav-logo img {
+        width: 45px;
     }
     
     .nav-links {
-        gap: 8px;
-        justify-content: center;
+        gap: 10px;
     }
     
     .links {
-        padding: 6px 10px;
-        font-size: 14px;
+        padding: 7px 13px;
+        font-size: 0.9rem;
     }
     
     .promo-text {
-        font-size: 24px;
+        font-size: 1.75rem;
     }
     
     .promo-banner {
-        padding: 15px;
+        padding: 18px;
     }
     
     .search-section {
         padding: 20px 15px;
     }
     
-    .products > h2,
-    .music-section h2 {
-        font-size: 28px;
+    .search-box {
+        max-width: 500px;
     }
     
-    .products article,
-    .music-section article {
-        width: 100%;
-        max-width: 320px;
+    .search-input {
+        padding: 13px 18px;
+        font-size: 0.95rem;
+    }
+    
+    .category-tag {
+        padding: 7px 15px;
+        font-size: 0.8rem;
+    }
+    
+    .products > h2,
+    .music-section h2 {
+        font-size: 2rem;
+    }
+    
+    .products > div {
+        gap: 20px;
+        padding: 20px 15px;
     }
     
     .products article {
-        min-height: auto;
-        max-height: none;
+        max-width: 280px;
+    }
+    
+    .music-tracks {
+        gap: 20px;
+    }
+}
+
+/* Планшеты (от 768px) */
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+    
+    header {
+        position: sticky;
+        top: 0;
+        padding: 10px 0;
+    }
+    
+    .nav-container {
+        padding: 0 30px;
+        max-width: 1400px;
+    }
+    
+    .nav-logo img {
+        width: 50px;
+    }
+    
+    .nav-links {
+        gap: 15px;
+    }
+    
+    .links {
+        padding: 8px 15px;
+        font-size: 1rem;
+    }
+    
+    .promo-text {
+        font-size: 2.25rem;
+    }
+    
+    .promo-banner {
+        padding: 20px;
+    }
+    
+    .search-section {
+        padding: 25px 20px;
+    }
+    
+    .search-container {
+        padding: 10px 0 20px 0;
+    }
+    
+    .search-box {
+        max-width: 600px;
+    }
+    
+    .search-input {
+        padding: 15px 20px;
+        font-size: 1rem;
+    }
+    
+    .search-button {
+        padding: 0 20px;
+    }
+    
+    .search-categories {
+        gap: 15px;
+    }
+    
+    .category-tag {
+        padding: 8px 18px;
+        font-size: 0.875rem;
+    }
+    
+    .products {
+        margin-top: 30px;
+    }
+    
+    .products > div {
+        gap: 30px;
+        padding: 30px;
+    }
+    
+    .products > h2 {
+        font-size: 2.625rem;
+        margin-bottom: 30px;
+    }
+    
+    .products article {
+        width: 320px;
+        padding: 20px;
+        border-radius: 20px;
+        min-height: 550px;
+        max-height: 650px;
+    }
+    
+    .products video {
+        border-radius: 15px;
+        margin-bottom: 15px;
+        height: 200px;
+    }
+    
+    .products h4 {
+        font-size: 1.125rem;
+        min-height: 54px;
+        max-height: 54px;
+    }
+    
+    .products p {
+        margin: 10px 15px;
+        font-size: 0.875rem;
+    }
+    
+    .products b {
+        font-size: 1.375rem;
+        margin-bottom: 15px;
+    }
+    
+    .products button {
+        padding: 14px 30px;
+        border-radius: 25px;
+        font-size: 1rem;
+    }
+    
+    .music-section {
+        padding: 40px 30px;
+    }
+    
+    .music-section h2 {
+        font-size: 2.625rem;
+        margin-bottom: 30px;
     }
     
     .music-promo {
-        padding: 25px 15px;
+        padding: 35px;
+        border-radius: 20px;
+        margin-bottom: 30px;
     }
     
     .music-promo b {
-        font-size: 20px;
+        font-size: 1.75rem;
+        margin-bottom: 20px;
+    }
+    
+    .music-promo button {
+        padding: 14px 30px;
+        border-radius: 25px;
+        font-size: 1rem;
+    }
+    
+    .music-tracks {
+        gap: 30px;
+    }
+    
+    .music-section article {
+        width: 280px;
+        padding: 20px;
+        border-radius: 20px;
+        height: 350px;
+    }
+    
+    .music-section img {
+        border-radius: 15px;
+        margin-bottom: 15px;
+        height: 180px;
+    }
+    
+    .music-section h4 {
+        font-size: 1rem;
+        margin-bottom: 15px;
+        min-height: 40px;
+    }
+    
+    .music-section audio {
+        margin-bottom: 15px;
+        border-radius: 25px;
+    }
+    
+    .music-section b, .music-section a {
+        font-size: 1.125rem;
+        padding: 10px;
+    }
+    
+    .footer {
+        padding: 40px 30px;
+    }
+    
+    .footer-feedback {
+        padding: 30px;
+        margin-bottom: 40px;
+        border-radius: 20px;
     }
     
     .footer-content {
-        flex-direction: column;
+        flex-direction: row;
+        gap: 30px;
+    }
+    
+    .footer-card {
+        min-width: 250px;
+        padding: 25px;
+        border-radius: 20px;
+    }
+    
+    .footer-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .footer-main-title {
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+    
+    .footer-subtitle {
+        font-size: 1.125rem;
+        margin-bottom: 15px;
+    }
+}
+
+/* Десктопы (от 1024px) */
+@media (min-width: 1024px) {
+    .products article:hover video {
+        transform: scale(1.05);
+    }
+    
+    .products article:hover {
+        transform: translateY(-10px) scale(1.02);
+    }
+    
+    .music-section article:hover {
+        transform: translateY(-8px) rotate(1deg);
+    }
+    
+    .music-section article:hover img {
+        transform: scale(1.05);
+    }
+}
+
+/* Большие десктопы (от 1440px) */
+@media (min-width: 1440px) {
+    .products > div {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+    
+    .music-tracks {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+}
+
+/* Очень большие экраны (от 1920px) */
+@media (min-width: 1920px) {
+    .nav-container {
+        max-width: 1800px;
+    }
+    
+    .products > div {
+        max-width: 1800px;
+    }
+    
+    .music-tracks {
+        max-width: 1600px;
     }
 }
 
