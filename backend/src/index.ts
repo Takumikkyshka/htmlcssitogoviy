@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import { initDatabase } from './database/init'
 import { runMigrations } from './database/migrations'
+import authRoutes from './routes/authRoutes'
 
 dotenv.config()
 
@@ -41,10 +42,14 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
+// API Routes
+app.use('/api/auth', authRoutes)
+
 // Запуск сервера
 app.listen(PORT, () => {
   console.log(`🚀 Сервер запущен на порту ${PORT}`)
   console.log(`📡 API доступен по адресу http://localhost:${PORT}`)
+  console.log(`🔐 API авторизации: http://localhost:${PORT}/api/auth`)
 })
 
 export default app
