@@ -1,0 +1,153 @@
+/* Глобальные стили и сброс - Mobile First */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Базовый размер шрифта для мобильных */
+html {
+    font-size: 14px;
+}
+
+/* Красивый градиентный фон для всего сайта */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+}
+
+/* Анимация градиентного фона */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Добавляем эффект стекла (glassmorphism) для контента */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Анимация появления элементов */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Базовые утилиты */
+.textcolor {
+    color: #1E90FF;
+}
+
+.flex {
+    display: flex;
+}
+
+.jfspace-between {
+    justify-content: space-between;
+}
+
+.itemscenter {
+    align-items: center;
+}
+
+.p1530 {
+    padding: 15px 30px;
+}
+
+.ptb15 {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.prl30 {
+    padding-right: 30px;
+    padding-left: 30px;
+}
+
+.gap25 {
+    gap: 25px;
+}
+
+.pb15 {
+    padding-bottom: 15px;
+}
+
+.textcenter {
+    text-align: center;
+}
+
+/* Разделители */
+.separator {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(30, 144, 255, 0.5), transparent);
+    margin: 10px 0;
+    animation: separatorGlow 2s ease-in-out infinite;
+}
+
+@keyframes separatorGlow {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Медиа-запросы для базовых размеров */
+@media (min-width: 480px) {
+    html {
+        font-size: 15px;
+    }
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 1024px) {
+    html {
+        font-size: 17px;
+    }
+}
+
+@media (min-width: 1440px) {
+    html {
+        font-size: 18px;
+    }
+}
+
+@media (min-width: 1920px) {
+    html {
+        font-size: 20px;
+    }
+}
+

@@ -101,6 +101,124 @@ const migrations: Migration[] = [
         })
       })
     }
+  },
+  {
+    name: '004_create_products_and_music',
+    up: async () => {
+      return new Promise((resolve, reject) => {
+        db.serialize(() => {
+          // Таблица товаров
+          db.run(`
+            CREATE TABLE IF NOT EXISTS products (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              title TEXT NOT NULL,
+              description TEXT NOT NULL,
+              price TEXT NOT NULL,
+              video TEXT,
+              poster TEXT,
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+              updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+          `, (err) => {
+            if (err) return reject(err)
+          })
+
+          // Таблица музыки
+          db.run(`
+            CREATE TABLE IF NOT EXISTS music (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              title TEXT NOT NULL,
+              price TEXT NOT NULL,
+              image TEXT,
+              audio TEXT,
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+              updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+          `, (err) => {
+            if (err) return reject(err)
+          })
+
+          // Добавляем начальные данные для товаров
+          const products = [
+            {
+              title: 'Клавиатура mchose jet75',
+              description: 'Высококачественные датчики Холла обеспечивают точное линейное считывание, сверхвысокую чувствительность и исключительную отзывчивость.',
+              price: '9000 рублей',
+              video: '/assets/videos/Распаковка MCHOSE JET75 НЕОЖИДАННО mchose magnetickeyboard keyboard review [get-speed.com].mp4',
+              poster: '/assets/imgs/mchosejet75.webp'
+            },
+            {
+              title: 'Компьютерная мышь mchose k7 ultra',
+              description: 'Сверхлёгкая беспроводная игровая мышь MCHOSE K7 Ultra - это идеальный выбор для тех, кто любит играть в компьютерные игры. Она обладает максимальным разрешением датчика 42000 DPI, что позволяет вам быстро перемещаться по экрану и точно контролировать курсор',
+              price: '8500 рублей',
+              video: '/assets/videos/mchosek7.mp4',
+              poster: '/assets/imgs/mchosek7ultra.webp'
+            }
+          ]
+
+          let productsInserted = 0
+          products.forEach((product) => {
+            db.run(
+              'INSERT OR IGNORE INTO products (title, description, price, video, poster) VALUES (?, ?, ?, ?, ?)',
+              [product.title, product.description, product.price, product.video, product.poster],
+              (err) => {
+                if (err) {
+                  console.error('Ошибка добавления товара:', err)
+                }
+                productsInserted++
+                if (productsInserted === products.length) {
+                  // Добавляем начальные данные для музыки
+                  const musicTracks = [
+                    {
+                      title: 'Дора - Кьют рок',
+                      price: '19 рублей',
+                      image: '/assets/imgs/Dora kiut rok.webp',
+                      audio: '/assets/audios/Dora - kiut rok.mp3'
+                    },
+                    {
+                      title: 'Дора - Втюрилась',
+                      price: '19 рублей',
+                      image: '/assets/imgs/Dora kiut rok.webp',
+                      audio: '/assets/audios/Dora - vturilas.mp3'
+                    }
+                  ]
+
+                  let musicInserted = 0
+                  musicTracks.forEach((track) => {
+                    db.run(
+                      'INSERT OR IGNORE INTO music (title, price, image, audio) VALUES (?, ?, ?, ?)',
+                      [track.title, track.price, track.image, track.audio],
+                      (err) => {
+                        if (err) {
+                          console.error('Ошибка добавления музыки:', err)
+                        }
+                        musicInserted++
+                        if (musicInserted === musicTracks.length) {
+                          resolve()
+                        }
+                      }
+                    )
+                  })
+                }
+              }
+            )
+          })
+        })
+      })
+    },
+    down: async () => {
+      return new Promise((resolve, reject) => {
+        db.serialize(() => {
+          db.run('DROP TABLE IF EXISTS products', (err) => {
+            if (err) return reject(err)
+          })
+          db.run('DROP TABLE IF EXISTS music', (err) => {
+            if (err) return reject(err)
+            else resolve()
+          })
+        })
+      })
+    }
   }
 ]
 

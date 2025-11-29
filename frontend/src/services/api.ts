@@ -71,6 +71,24 @@ class ApiService {
     return this.request<any>(`/posts/${id}`)
   }
 
+  // Products endpoints
+  async getProducts() {
+    return this.request<any[]>('/products')
+  }
+
+  async getProductById(id: number) {
+    return this.request<any>(`/products/${id}`)
+  }
+
+  // Music endpoints
+  async getMusic() {
+    return this.request<any[]>('/music')
+  }
+
+  async getMusicById(id: number) {
+    return this.request<any>(`/music/${id}`)
+  }
+
   async createPost(title: string, content: string, category?: string) {
     return this.request<any>('/posts', {
       method: 'POST',

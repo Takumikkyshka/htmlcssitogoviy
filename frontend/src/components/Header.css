@@ -1,0 +1,176 @@
+/* Header - Mobile First */
+header {
+    background: transparent;
+    backdrop-filter: blur(25px);
+    box-shadow: none;
+    animation: fadeInUp 0.6s ease;
+    position: relative;
+    z-index: 1000;
+    padding: 8px 0;
+}
+
+.nav-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 0 15px;
+    margin: 0 auto;
+}
+
+.nav-logo img {
+    width: 40px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.nav-logo:hover img {
+    transform: scale(1.1);
+}
+
+.nav-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.links {
+    text-decoration: none;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    color: #1E90FF;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(30, 144, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 0.85rem;
+    display: inline-block;
+}
+
+.links::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(30, 144, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.links:hover::before {
+    left: 100%;
+}
+
+.links:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #1E90FF, #00BFFF);
+    color: white;
+    border-color: #1E90FF;
+}
+
+/* Стили для кнопок авторизации */
+.nav-links button.links {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(30, 144, 255, 0.3);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    color: #1E90FF;
+}
+
+.nav-links button.links:hover {
+    background: linear-gradient(135deg, #1E90FF, #00BFFF);
+    color: white;
+    border-color: #1E90FF;
+}
+
+.user-info {
+    color: #4a90e2;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(74, 144, 226, 0.3);
+}
+
+.logout-btn {
+    color: #e74c3c;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(231, 76, 60, 0.3);
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border-color: #e74c3c;
+}
+
+/* Адаптивность */
+@media (min-width: 480px) {
+    .nav-container {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+    
+    .nav-logo img {
+        width: 45px;
+    }
+    
+    .nav-links {
+        gap: 10px;
+    }
+    
+    .links {
+        padding: 7px 13px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (min-width: 768px) {
+    header {
+        position: sticky;
+        top: 0;
+        padding: 10px 0;
+    }
+    
+    .nav-container {
+        padding: 0 30px;
+        max-width: 1400px;
+    }
+    
+    .nav-logo img {
+        width: 50px;
+    }
+    
+    .nav-links {
+        gap: 15px;
+    }
+    
+    .links {
+        padding: 8px 15px;
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .nav-container {
+        padding: 0 40px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .nav-container {
+        padding: 0 50px;
+    }
+}
+
+@media (min-width: 1920px) {
+    .nav-container {
+        padding: 0 60px;
+    }
+}
+

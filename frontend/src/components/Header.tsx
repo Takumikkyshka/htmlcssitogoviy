@@ -3,6 +3,7 @@ import { smoothScrollTo } from '../utils/smoothScroll'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
 import AuthModal from './AuthModal'
+import './Header.css'
 
 function Header() {
   const location = useLocation()

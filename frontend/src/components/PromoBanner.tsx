@@ -1,4 +1,5 @@
 import Carousel from './Carousel'
+import './PromoBanner.css'
 
 function PromoBanner() {
   const promoItems = [

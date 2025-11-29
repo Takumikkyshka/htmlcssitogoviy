@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import './Carousel.css'
 
 interface CarouselItem {
   id: number

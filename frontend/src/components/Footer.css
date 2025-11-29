@@ -1,0 +1,228 @@
+/* Footer - Mobile First */
+.footer {
+    padding: 20px 15px;
+    background: transparent;
+    backdrop-filter: blur(25px);
+    animation: fadeInUp 2.2s ease;
+}
+
+.footer-feedback {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 20px 15px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.footer-title {
+    color: #1E90FF;
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.footer-main-title {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid rgba(30, 144, 255, 0.2);
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: white;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #1E90FF;
+    box-shadow: 0 0 0 4px rgba(30, 144, 255, 0.1);
+    transform: scale(1.02);
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #1E90FF, #00BFFF);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #1873CC, #0099CC);
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(30, 144, 255, 0.5);
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.footer-card {
+    flex: 1;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.footer-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.footer-logo {
+    border-radius: 10px;
+    margin-bottom: 10px;
+    width: 50px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.footer-logo:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.footer-brand {
+    color: #333333;
+    font-size: 20px;
+    margin: 10px 0;
+    font-weight: 700;
+}
+
+.footer-subtitle {
+    color: #1E90FF;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.footer-text {
+    color: #666666;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.footer-description {
+    color: #666666;
+}
+
+.footer-table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.table-header, .table-data {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(30, 144, 255, 0.1);
+}
+
+.table-header {
+    color: #1E90FF;
+    font-weight: 600;
+}
+
+.social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.social-link {
+    color: #1E90FF;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.social-link:hover {
+    color: white;
+    background: linear-gradient(135deg, #1E90FF, #00BFFF);
+    transform: translateX(8px);
+    box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);
+}
+
+/* Адаптивность */
+@media (min-width: 768px) {
+    .footer {
+        padding: 40px 30px;
+    }
+    
+    .footer-feedback {
+        padding: 30px;
+        margin-bottom: 40px;
+        border-radius: 20px;
+    }
+    
+    .footer-content {
+        flex-direction: row;
+        gap: 30px;
+    }
+    
+    .footer-card {
+        min-width: 250px;
+        padding: 25px;
+        border-radius: 20px;
+    }
+    
+    .footer-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .footer-main-title {
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+    
+    .footer-subtitle {
+        font-size: 1.125rem;
+        margin-bottom: 15px;
+    }
+    
+    .submit-btn {
+        padding: 16px 30px;
+        font-size: 16px;
+    }
+}
+

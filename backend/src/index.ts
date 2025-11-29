@@ -5,6 +5,8 @@ import { initDatabase } from './database/init'
 import { runMigrations } from './database/migrations'
 import authRoutes from './routes/authRoutes'
 import postsRoutes from './routes/postsRoutes'
+import productsRoutes from './routes/productsRoutes'
+import musicRoutes from './routes/musicRoutes'
 
 dotenv.config()
 
@@ -46,6 +48,8 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/posts', postsRoutes)
+app.use('/api/products', productsRoutes)
+app.use('/api/music', musicRoutes)
 
 // Запуск сервера
 app.listen(PORT, () => {
