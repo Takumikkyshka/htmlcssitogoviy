@@ -2,6 +2,9 @@
 .dashboard-section {
     padding: 20px 10px;
     animation: fadeInUp 2.6s ease;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .dashboard-section h2 {
@@ -16,7 +19,7 @@
 
 .dashboard-stats {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     margin-bottom: 25px;
     width: 100%;
@@ -214,6 +217,12 @@
 }
 
 /* Адаптивность */
+@media (max-width: 479px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (min-width: 480px) {
     .dashboard-stats {
         grid-template-columns: repeat(3, 1fr);

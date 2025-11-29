@@ -55,7 +55,6 @@ function BuyModal({ product, isOpen, onClose, onConfirm }: BuyModalProps) {
   return (
     <div className="buy-modal-overlay" onClick={onClose}>
       <div className="buy-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="buy-modal-close" onClick={onClose}>×</button>
         <h2>Оформление заказа</h2>
         <div className="buy-modal-product">
           <h3>{product.title}</h3>

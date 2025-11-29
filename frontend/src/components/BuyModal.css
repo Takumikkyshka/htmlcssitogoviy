@@ -44,36 +44,11 @@
   }
 }
 
-.buy-modal-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #666;
-  line-height: 1;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.3s ease;
-  z-index: 10;
-}
-
-.buy-modal-close:hover {
-  color: #000;
-}
 
 .buy-modal-content h2 {
   margin: 0 0 20px 0;
-  margin-top: 10px;
   color: #333;
   font-size: 24px;
-  padding-right: 30px;
 }
 
 .buy-modal-product {
