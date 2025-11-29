@@ -199,6 +199,69 @@ header {
     text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.5);
 }
 
+/* Адаптивность карусели */
+@media (max-width: 768px) {
+    .carousel-slide img {
+        height: 250px;
+    }
+    
+    .carousel-content {
+        padding: 15px;
+    }
+    
+    .carousel-content h3 {
+        font-size: 1.25rem;
+    }
+    
+    .carousel-content p {
+        font-size: 0.85rem;
+    }
+    
+    .carousel-button {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+    
+    .carousel-button-prev {
+        left: 10px;
+    }
+    
+    .carousel-button-next {
+        right: 10px;
+    }
+    
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.25rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .carousel-container {
+        padding: 30px 20px;
+    }
+    
+    .carousel-slide img {
+        height: 500px;
+    }
+    
+    .carousel-content {
+        padding: 40px;
+    }
+    
+    .carousel-content h3 {
+        font-size: 2.25rem;
+    }
+    
+    .carousel-content p {
+        font-size: 1.1rem;
+    }
+}
+
 /* Секция поиска - Mobile First */
 .search-section {
     background: transparent;
@@ -436,6 +499,7 @@ header {
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 4;
+    line-clamp: 4;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     font-size: 0.85rem;
@@ -1189,6 +1253,7 @@ header {
     }
 }
 
+/* Loader - улучшенная версия */
 .loader {
     border: 4px solid rgba(30, 144, 255, 0.3);
     border-top: 4px solid #1E90FF;
@@ -1197,6 +1262,331 @@ header {
     height: 40px;
     animation: spin 1s linear infinite;
 }
+
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.loader-spinner {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.loader-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1E90FF, #00BFFF);
+    animation: bounce 1.4s ease-in-out infinite both;
+}
+
+.loader-circle:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.loader-circle:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+.loader-text {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Карусель */
+.carousel-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    padding: 20px 0;
+}
+
+.carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.carousel-slides {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    position: relative;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.carousel-slide.transitioning {
+    opacity: 0.7;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.carousel-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 30px;
+    color: white;
+}
+
+.carousel-content h3 {
+    font-size: 1.75rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-content p {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 2rem;
+    color: #1E90FF;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.carousel-button:hover {
+    background: linear-gradient(135deg, #1E90FF, #00BFFF);
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(30, 144, 255, 0.4);
+}
+
+.carousel-button-prev {
+    left: 20px;
+}
+
+.carousel-button-next {
+    right: 20px;
+}
+
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.carousel-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.carousel-indicator:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(1.2);
+}
+
+.carousel-indicator.active {
+    background: linear-gradient(135deg, #1E90FF, #00BFFF);
+    border-color: #1E90FF;
+    width: 30px;
+    border-radius: 6px;
+}
+
+/* Кнопка "Наверх" */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #1E90FF, #00BFFF);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(30, 144, 255, 0.4);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-to-top:hover {
+    background: linear-gradient(135deg, #1873CC, #0099CC);
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 6px 25px rgba(30, 144, 255, 0.6);
+}
+
+/* Дополнительные анимации */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes rotateIn {
+    from {
+        opacity: 0;
+        transform: rotate(-180deg) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmer-effect {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Плавная прокрутка для всего сайта */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Анимация для карточек товаров при появлении */
+.products article {
+    animation: fadeInUp 0.6s ease backwards;
+}
+
+.products article:nth-child(1) { animation-delay: 0.1s; }
+.products article:nth-child(2) { animation-delay: 0.2s; }
+.products article:nth-child(3) { animation-delay: 0.3s; }
+.products article:nth-child(4) { animation-delay: 0.4s; }
+.products article:nth-child(5) { animation-delay: 0.5s; }
+.products article:nth-child(6) { animation-delay: 0.6s; }
+.products article:nth-child(7) { animation-delay: 0.7s; }
+.products article:nth-child(8) { animation-delay: 0.8s; }
+
+/* Анимация для музыкальных треков */
+.music-section article {
+    animation: scaleIn 0.5s ease backwards;
+}
+
+.music-section article:nth-child(1) { animation-delay: 0.1s; }
+.music-section article:nth-child(2) { animation-delay: 0.2s; }
+.music-section article:nth-child(3) { animation-delay: 0.3s; }
+.music-section article:nth-child(4) { animation-delay: 0.4s; }
 
 /* Секция карты - Mobile First */
 .map-section {
