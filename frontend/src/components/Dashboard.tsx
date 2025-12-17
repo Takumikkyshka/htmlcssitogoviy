@@ -39,7 +39,7 @@ interface Order {
 }
 
 function Dashboard() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const navigate = useNavigate()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
@@ -220,7 +220,7 @@ function Dashboard() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'right' as const,
+        position: 'bottom' as const,
         labels: {
           color: '#333',
           font: {
@@ -233,11 +233,13 @@ function Dashboard() {
   } as const
 
   const totalSpent = orders
-    .filter(o => o.status === 'completed')
+    .filter(o => o.status !== 'cancelled')
     .reduce((sum, order) => sum + order.price * order.quantity, 0)
 
   const totalOrders = orders.length
   const completedOrders = orders.filter(o => o.status === 'completed').length
+  const hasOrders = totalOrders > 0
+  const [isCancelling, setIsCancelling] = useState<number | null>(null)
 
   if (!isAuthenticated) {
     return null
@@ -247,18 +249,22 @@ function Dashboard() {
     return (
       <section className="dashboard-section">
         <h2>Личный кабинет</h2>
-        <div style={{ textAlign: 'center', padding: '40px', color: 'white' }}>
-          Загрузка данных...
-        </div>
+        <p className="dashboard-subtitle">Подготавливаем вашу статистику и историю заказов...</p>
+        <div className="dashboard-loading">Загрузка данных...</div>
       </section>
     )
   }
 
   return (
     <section className="dashboard-section">
-      <h2>Личный кабинет</h2>
+      <div className="dashboard-header">
+        <h2>Личный кабинет</h2>
+        <p className="dashboard-subtitle">
+          {user?.name ? `Добро пожаловать, ${user.name}!` : 'Ваша персональная статистика и история заказов.'}
+        </p>
+      </div>
 
-      {/* Статистика */}
+      {/* Верхняя статистика */}
       <div className="dashboard-stats">
         <div className="stat-card">
           <h3>Всего заказов</h3>
@@ -274,109 +280,145 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Графики */}
-      <div className="dashboard-charts">
-        <div className="chart-card">
-          <h3>Динамика продаж</h3>
-          <div className="chart-container">
-            <Line data={salesData} options={chartOptions} />
-          </div>
-        </div>
-        <div className="chart-card">
-          <h3>Количество заказов</h3>
-          <div className="chart-container">
-            <Bar data={ordersData} options={chartOptions} />
-          </div>
-        </div>
-        <div className="chart-card">
-          <h3>Статус заказов</h3>
-          <div className="chart-container">
-            <Doughnut data={statusData} options={doughnutOptions} />
-          </div>
-        </div>
-      </div>
-
-      {/* Таблица заказов */}
-      <div className="dashboard-table-section">
-        <h3>Мои заказы</h3>
-        
-        {/* Фильтры и сортировка */}
-        <div className="table-controls">
-          <div className="filter-group">
-            <label htmlFor="status-filter">Фильтр по статусу:</label>
-            <select
-              id="status-filter"
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">Все</option>
-              <option value="completed">Завершено</option>
-              <option value="processing">В обработке</option>
-              <option value="cancelled">Отменено</option>
-            </select>
+      {/* Графики и таблица */}
+      {hasOrders ? (
+        <>
+          <div className="dashboard-charts">
+            <div className="chart-card">
+              <h3>Динамика покупок</h3>
+              <div className="chart-container">
+                <Line data={salesData} options={chartOptions} />
+              </div>
+            </div>
+            <div className="chart-card">
+              <h3>Количество заказов</h3>
+              <div className="chart-container">
+                <Bar data={ordersData} options={chartOptions} />
+              </div>
+            </div>
+            <div className="chart-card">
+              <h3>Статус заказов</h3>
+              <div className="chart-container doughnut-container">
+                <Doughnut data={statusData} options={doughnutOptions} />
+              </div>
+            </div>
           </div>
 
-          <div className="sort-group">
-            <label htmlFor="sort-select">Сортировка:</label>
-            <select
-              id="sort-select"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'date' | 'price' | 'product')}
-              className="sort-select"
-            >
-              <option value="date">По дате</option>
-              <option value="product">По товару</option>
-              <option value="price">По цене</option>
-            </select>
-            <button
-              className="sort-order-button"
-              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            >
-              {sortOrder === 'asc' ? '↑' : '↓'}
-            </button>
-          </div>
-        </div>
+          <div className="dashboard-table-section">
+            <h3>Мои заказы</h3>
 
-        {/* Таблица */}
-        <div className="table-wrapper">
-          <table className="dashboard-table">
-            <thead>
-              <tr>
-                <th>Дата</th>
-                <th>Товар</th>
-                <th>Количество</th>
-                <th>Цена</th>
-                <th>Статус</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAndSortedOrders.length > 0 ? (
-                filteredAndSortedOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td>{order.date}</td>
-                    <td>{order.product}</td>
-                    <td>{order.quantity}</td>
-                    <td>{order.price.toLocaleString('ru-RU')} ₽</td>
-                    <td>
-                      <span className={`status-badge status-${order.status}`}>
-                        {order.status === 'completed' ? 'Завершено' : 
-                         order.status === 'processing' ? 'В обработке' : 'Отменено'}
-                      </span>
-                    </td>
+            <div className="table-controls">
+              <div className="filter-group">
+                <label htmlFor="status-filter">Фильтр по статусу:</label>
+                <select
+                  id="status-filter"
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="filter-select"
+                >
+                  <option value="all">Все</option>
+                  <option value="completed">Завершено</option>
+                  <option value="processing">В обработке</option>
+                  <option value="cancelled">Отменено</option>
+                </select>
+              </div>
+
+              <div className="sort-group">
+                <label htmlFor="sort-select">Сортировка:</label>
+                <select
+                  id="sort-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'date' | 'price' | 'product')}
+                  className="sort-select"
+                >
+                  <option value="date">По дате</option>
+                  <option value="product">По товару</option>
+                  <option value="price">По цене</option>
+                </select>
+                <button
+                  className="sort-order-button"
+                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                >
+                  {sortOrder === 'asc' ? '↑' : '↓'}
+                </button>
+              </div>
+            </div>
+
+            <div className="table-wrapper">
+              <table className="dashboard-table">
+                <thead>
+                  <tr>
+                    <th>Дата</th>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                    <th>Статус</th>
+                    <th>Действие</th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>
-                    Заказы не найдены
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {filteredAndSortedOrders.length > 0 ? (
+                    filteredAndSortedOrders.map((order) => (
+                      <tr key={order.id}>
+                        <td>{order.date}</td>
+                        <td>{order.product}</td>
+                        <td>{order.quantity}</td>
+                        <td>{order.price.toLocaleString('ru-RU')} ₽</td>
+                        <td>
+                          <span className={`status-badge status-${order.status}`}>
+                            {order.status === 'completed' ? 'Завершено' :
+                              order.status === 'processing' ? 'В обработке' : 'Отменено'}
+                          </span>
+                        </td>
+                        <td>
+                          {order.status === 'processing' ? (
+                            <button
+                              className="links"
+                              style={{ padding: '4px 10px', fontSize: '0.75rem' }}
+                              disabled={isCancelling === order.id}
+                              onClick={async () => {
+                                if (!confirm('Отменить этот заказ?')) return
+                                setIsCancelling(order.id)
+                                const response = await apiService.cancelOrder(order.id)
+                                if (response.error) {
+                                  alert(response.error)
+                                } else {
+                                  setOrders(prev =>
+                                    prev.map(o => o.id === order.id ? { ...o, status: 'cancelled' } : o)
+                                  )
+                                }
+                                setIsCancelling(null)
+                              }}
+                            >
+                              {isCancelling === order.id ? 'Отмена...' : 'Отменить'}
+                            </button>
+                          ) : (
+                            '-'
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} style={{ textAlign: 'center', padding: '20px' }}>
+                        Заказы не найдены
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="dashboard-empty">
+          <h3>Пока нет заказов</h3>
+          <p>Оформите первый заказ в каталоге, и здесь появится ваша статистика.</p>
+          <button className="links" onClick={() => navigate('/catalog')}>
+            Перейти в каталог
+          </button>
         </div>
-      </div>
+      )}
     </section>
   )
 }

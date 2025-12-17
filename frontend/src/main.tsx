@@ -3,15 +3,31 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
 import './styles/global.css'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
+// Убираем StrictMode в production для лучшей производительности
+const isDevelopment = import.meta.env.DEV
+
+const AppWrapper = () => (
+  <BrowserRouter>
+    <AuthProvider>
+      <CartProvider>
         <App />
-      </AuthProvider>
-    </BrowserRouter>
-  </StrictMode>,
+      </CartProvider>
+    </AuthProvider>
+  </BrowserRouter>
 )
+
+const root = createRoot(document.getElementById('root')!)
+
+if (isDevelopment) {
+  root.render(
+    <StrictMode>
+      <AppWrapper />
+    </StrictMode>
+  )
+} else {
+  root.render(<AppWrapper />)
+}
 

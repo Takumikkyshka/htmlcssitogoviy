@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { apiService } from '../services/api'
 import { useAuth } from '../context/AuthContext'
-import BuyModal from './BuyModal'
+import { useCart } from '../context/CartContext'
 import './Products.css'
 
 interface Product {
@@ -19,14 +19,14 @@ interface Product {
 function Products() {
   const location = useLocation()
   const { isAuthenticated } = useAuth()
+  const { addToCart } = useCart()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'name' | 'price'>('name')
   const [favorites, setFavorites] = useState<Set<number>>(new Set())
-  const [buyModalOpen, setBuyModalOpen] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -34,10 +34,8 @@ function Products() {
         const response = await apiService.getProducts()
         if (response.data) {
           setProducts(response.data)
-          console.log('Загружено товаров:', response.data.length)
         }
       } catch (error) {
-        console.error('Ошибка загрузки товаров:', error)
         setProducts([])
       } finally {
         setLoading(false)
@@ -101,47 +99,23 @@ function Products() {
     }
   }
 
-  const handleBuyClick = (product: Product) => {
-    if (!isAuthenticated) {
-      alert('Войдите в аккаунт, чтобы купить товар')
-      return
-    }
-    setSelectedProduct(product)
-    setBuyModalOpen(true)
-  }
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image || product.poster,
+    })
 
-  const handleBuyConfirm = async (address: string, cardNumber: string) => {
-    if (!selectedProduct) return
-
-    try {
-      const response = await apiService.createOrder(selectedProduct.id, 1, address, cardNumber)
-      console.log('Ответ от сервера:', response)
-      if (response.error) {
-        alert(`Ошибка: ${response.error}`)
-      } else if (response.data) {
-        alert('Заказ успешно оформлен!')
-        setBuyModalOpen(false)
-        setSelectedProduct(null)
-      } else {
-        alert('Заказ успешно оформлен!')
-        setBuyModalOpen(false)
-        setSelectedProduct(null)
-      }
-    } catch (error: any) {
-      console.error('Ошибка покупки товара:', error)
-      const errorMessage = error?.response?.data?.error || error?.message || 'Произошла ошибка при оформлении заказа'
-      alert(`Ошибка: ${errorMessage}`)
-    }
+    setToastMessage(`«${product.title}» добавлен в корзину`)
+    setTimeout(() => {
+      setToastMessage(null)
+    }, 1500)
   }
 
   // Фильтрация и сортировка
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = [...products]
-
-    console.log('Всего товаров:', products.length)
-    console.log('Поисковый запрос:', searchQuery)
-    console.log('Выбранная категория:', selectedCategory)
-    console.log('Сортировка:', sortBy)
 
     // Поиск
     if (searchQuery && searchQuery.trim()) {
@@ -151,16 +125,11 @@ function Products() {
         const descMatch = p.description?.toLowerCase().includes(query) || false
         return titleMatch || descMatch
       })
-      console.log('После поиска осталось:', filtered.length)
     }
 
     // Фильтр по категории
     if (selectedCategory && selectedCategory !== 'all') {
-      filtered = filtered.filter(p => {
-        const match = p.category === selectedCategory
-        return match
-      })
-      console.log('После фильтрации по категории осталось:', filtered.length)
+      filtered = filtered.filter(p => p.category === selectedCategory)
     }
 
     // Сортировка
@@ -174,7 +143,6 @@ function Products() {
       }
     })
 
-    console.log('Итого отфильтровано:', sorted.length)
     return sorted
   }, [products, searchQuery, selectedCategory, sortBy])
 
@@ -223,33 +191,34 @@ function Products() {
                 ★
               </button>
               
-              {product.video ? (
-                <video width="320" height="240" controls poster={product.poster}>
-                  <source src={product.video} type="video/mp4" />
-                </video>
-              ) : product.image || product.poster ? (
-                <img 
-                  src={product.image || product.poster} 
-                  alt={product.title}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.style.display = 'none'
-                  }}
-                  style={{
-                    width: '100%',
-                    height: '240px',
-                    objectFit: 'cover',
-                    borderRadius: '12px',
-                    marginBottom: '12px'
-                  }}
-                />
-              ) : null}
-              
-              <h4>{product.title}</h4>
+              <Link to={`/product/${product.id}`} className="product-link">
+                {product.video ? (
+                  <video width="320" height="240" controls poster={product.poster}>
+                    <source src={product.video} type="video/mp4" />
+                  </video>
+                ) : product.image || product.poster ? (
+                  <img 
+                    src={product.image || product.poster} 
+                    alt={product.title}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                    }}
+                    style={{
+                      width: '100%',
+                      height: '240px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                      marginBottom: '12px'
+                    }}
+                  />
+                ) : null}
+                <h4>{product.title}</h4>
+              </Link>
               <p>{product.description}</p>
               <div className="costbutton">
                 <b>{product.price}</b>
-                <button onClick={() => handleBuyClick(product)}>Купить</button>
+                <button onClick={() => handleAddToCart(product)}>В корзину</button>
               </div>
             </article>
           ))
@@ -262,17 +231,13 @@ function Products() {
         )}
       </div>
 
-      {selectedProduct && (
-        <BuyModal
-          product={selectedProduct}
-          isOpen={buyModalOpen}
-          onClose={() => {
-            setBuyModalOpen(false)
-            setSelectedProduct(null)
-          }}
-          onConfirm={handleBuyConfirm}
-        />
+      {toastMessage && (
+        <div className="cart-toast">
+          {toastMessage}
+        </div>
       )}
+
+      {/* Модальное окно покупки больше не используется, оформляем заказ через корзину */}
     </section>
   )
 }

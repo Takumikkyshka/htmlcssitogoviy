@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { smoothScrollTo } from '../utils/smoothScroll'
 import { useAuth } from '../context/AuthContext'
-import { useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import AuthModal from './AuthModal'
 import './Header.css'
 
@@ -11,6 +11,7 @@ function Header() {
   const { isAuthenticated, user, logout } = useAuth()
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login')
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, anchor: string) => {
     if (location.pathname === '/') {
@@ -25,13 +26,40 @@ function Header() {
     }
   }
 
-  const handleLoginClick = () => {
+  useEffect(() => {
     setAuthModalMode('login')
-    setAuthModalOpen(true)
-  }
+  }, [])
 
-  const handleRegisterClick = () => {
-    setAuthModalMode('register')
+  const isAdminValue = useMemo(() => {
+    if (!isAuthenticated || !user) {
+      return false
+    }
+
+    const userRole = (user as any)?.role
+    const storedUser = localStorage.getItem('user')
+    let parsedRole = null
+    
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser)
+        parsedRole = parsedUser.role
+      } catch (e) {
+        // Игнорируем ошибки парсинга
+      }
+    }
+    
+    const storedRole = localStorage.getItem('userRole')
+    const finalRole = userRole || parsedRole || storedRole
+    
+    return finalRole === 'admin'
+  }, [isAuthenticated, user?.id, (user as any)?.role])
+
+  useEffect(() => {
+    setIsAdmin(isAdminValue)
+  }, [isAdminValue])
+
+  const handleAuthClick = () => {
+    setAuthModalMode('login')
     setAuthModalOpen(true)
   }
 
@@ -53,26 +81,29 @@ function Header() {
               Главная
             </a>
             <Link to="/catalog" className="links">Каталог</Link>
+            <Link to="/blog" className="links">Блог</Link>
             <Link to="/orders" className="links">Заказы</Link>
-            <a 
-              href="#music" 
-              className="links"
-              onClick={(e) => handleAnchorClick(e, 'music')}
-            >
-              Музыка
-            </a>
             <Link to="/favorites" className="links">Избранное</Link>
+            <Link to="/cart" className="links">Корзина</Link>
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="links">Личный кабинет</Link>
-                <span className="links user-info">{user?.name || user?.email}</span>
+                <button 
+                  type="button" 
+                  className="links user-info"
+                  onClick={() => navigate('/dashboard')}
+                >
+                  {user?.name || user?.email}
+                </button>
+                {(isAdmin || 
+                  (user as any)?.email === 'admin@gmail.com' || 
+                  (user as any)?.email === 'admin@admin.com' ||
+                  localStorage.getItem('userRole') === 'admin') && (
+                  <Link to="/admin" className="links">Админ-панель</Link>
+                )}
                 <button onClick={logout} className="links logout-btn">Выйти</button>
               </>
             ) : (
-              <>
-                <button onClick={handleLoginClick} className="links">Войти</button>
-                <button onClick={handleRegisterClick} className="links">Регистрация</button>
-              </>
+              <button onClick={handleAuthClick} className="links">Войти / Регистрация</button>
             )}
           </div>
         </nav>

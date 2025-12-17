@@ -109,3 +109,50 @@ export const createOrder = (req: AuthRequest, res: Response) => {
   })
 }
 
+export const cancelOrder = (req: AuthRequest, res: Response) => {
+  const userId = req.userId
+  const orderId = parseInt(req.params.id, 10)
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Необходима авторизация' })
+  }
+
+  if (Number.isNaN(orderId)) {
+    return res.status(400).json({ error: 'Некорректный ID заказа' })
+  }
+
+  // Разрешаем отменять только свои заказы и только если они не отменены
+  db.run(
+    `UPDATE orders 
+     SET status = 'cancelled', updated_at = CURRENT_TIMESTAMP 
+     WHERE id = ? AND user_id = ? AND status != 'cancelled'`,
+    [orderId, userId],
+    function (err) {
+      if (err) {
+        console.error('Ошибка отмены заказа:', err)
+        return res.status(500).json({ error: 'Ошибка отмены заказа' })
+      }
+
+      if (this.changes === 0) {
+        return res.status(404).json({ error: 'Заказ не найден или уже отменён' })
+      }
+
+      db.get(
+        `SELECT o.*, p.title as product_title 
+         FROM orders o
+         LEFT JOIN products p ON o.product_id = p.id
+         WHERE o.id = ? AND o.user_id = ?`,
+        [orderId, userId],
+        (err, order: any) => {
+          if (err) {
+            console.error('Ошибка получения отменённого заказа:', err)
+            return res.status(500).json({ error: 'Заказ отменён, но не удалось получить данные' })
+          }
+
+          res.json({ data: order })
+        }
+      )
+    }
+  )
+}
+

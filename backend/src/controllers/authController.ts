@@ -76,20 +76,28 @@ export const register = async (req: RegisterRequest, res: Response) => {
 
             const userId = this.lastID
 
-            // Генерация токена
-            const token = generateToken({
-              id: userId,
-              email: email
-            })
-
-            res.status(201).json({
-              message: 'Пользователь успешно зарегистрирован',
-              token,
-              user: {
-                id: userId,
-                email,
-                name: name || null
+            // Получаем роль пользователя
+            db.get('SELECT role FROM users WHERE id = ?', [userId], (err, userRow: any) => {
+              if (err) {
+                console.error('Ошибка получения роли пользователя:', err)
               }
+              
+              // Генерация токена
+              const token = generateToken({
+                id: userId,
+                email: email
+              })
+
+              res.status(201).json({
+                message: 'Пользователь успешно зарегистрирован',
+                token,
+                user: {
+                  id: userId,
+                  email,
+                  name: name || null,
+                  role: userRow?.role || 'user'
+                }
+              })
             })
           }
         )
@@ -138,13 +146,18 @@ export const login = async (req: LoginRequest, res: Response) => {
           email: row.email
         })
 
+        // Убеждаемся, что роль правильно возвращается
+        const userRole = row.role || 'user'
+        console.log('Login - User role from DB:', userRole, 'for email:', row.email)
+        
         res.json({
           message: 'Успешный вход в систему',
           token,
           user: {
             id: row.id,
             email: row.email,
-            name: row.name
+            name: row.name,
+            role: userRole
           }
         })
       }
@@ -154,4 +167,3 @@ export const login = async (req: LoginRequest, res: Response) => {
     res.status(500).json({ error: 'Внутренняя ошибка сервера' })
   }
 }
-

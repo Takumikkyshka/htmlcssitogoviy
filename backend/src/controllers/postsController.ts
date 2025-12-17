@@ -12,22 +12,32 @@ interface Post {
   updated_at: string
 }
 
-// GET /api/posts - получить все отзывы
+// GET /api/posts - получить все отзывы (можно фильтровать по product_id)
 export const getAllPosts = (req: AuthRequest, res: Response) => {
-  db.all(
-    `SELECT p.*, u.email, u.name as user_name 
-     FROM posts p 
-     JOIN users u ON p.user_id = u.id 
-     ORDER BY p.created_at DESC`,
-    [],
-    (err, rows: any[]) => {
-      if (err) {
-        console.error('Ошибка получения отзывов:', err)
-        return res.status(500).json({ error: 'Ошибка получения отзывов' })
-      }
-      res.json(rows)
+  const productId = req.query.product_id as string | undefined
+  
+  let query = `
+    SELECT p.*, u.email, u.name as user_name, pr.title as product_title
+    FROM posts p 
+    JOIN users u ON p.user_id = u.id 
+    LEFT JOIN products pr ON p.product_id = pr.id
+  `
+  const params: any[] = []
+  
+  if (productId) {
+    query += ' WHERE p.product_id = ?'
+    params.push(parseInt(productId, 10))
+  }
+  
+  query += ' ORDER BY p.created_at DESC'
+  
+  db.all(query, params, (err, rows: any[]) => {
+    if (err) {
+      console.error('Ошибка получения отзывов:', err)
+      return res.status(500).json({ error: 'Ошибка получения отзывов' })
     }
-  )
+    res.json(rows)
+  })
 }
 
 // GET /api/posts/:id - получить один отзыв
@@ -68,9 +78,11 @@ export const createPost = (req: AuthRequest, res: Response) => {
     return res.status(400).json({ error: 'Заголовок и содержание обязательны' })
   }
 
+  const { product_id } = req.body
+  
   db.run(
-    'INSERT INTO posts (user_id, title, content, category) VALUES (?, ?, ?, ?)',
-    [userId, title, content, category || 'review'],
+    'INSERT INTO posts (user_id, title, content, category, product_id) VALUES (?, ?, ?, ?, ?)',
+    [userId, title, content, category || 'review', product_id || null],
     function(err) {
       if (err) {
         console.error('Ошибка создания отзыва:', err)

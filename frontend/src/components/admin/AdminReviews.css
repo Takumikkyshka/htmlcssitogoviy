@@ -1,0 +1,24 @@
+.admin-reviews {
+  width: 100%;
+}
+
+.review-text-cell {
+  max-width: 200px;
+}
+
+.review-text-preview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-approved {
+  color: #155724;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: #856404;
+  font-weight: 600;
+}
+

@@ -14,12 +14,6 @@ function PromoBanner() {
       title: 'Новинки 2024',
       description: 'Ознакомьтесь с новейшими моделями клавиатур и компьютерных мышей от ведущих производителей.',
       image: '/assets/imgs/mchosek7ultra.webp'
-    },
-    {
-      id: 3,
-      title: 'Музыкальная подписка',
-      description: 'Подписка на всю музыку всего за 399 рублей в месяц. Безлимитный доступ к миллионам треков.',
-      image: '/assets/imgs/Dora kiut rok.webp'
     }
   ]
 

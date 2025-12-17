@@ -10,6 +10,8 @@ import productsRoutes from './routes/productsRoutes'
 import musicRoutes from './routes/musicRoutes'
 import ordersRoutes from './routes/ordersRoutes'
 import favoritesRoutes from './routes/favoritesRoutes'
+import reviewsRoutes from './routes/reviewsRoutes'
+import adminRoutes from './routes/adminRoutes'
 
 dotenv.config()
 
@@ -68,6 +70,25 @@ app.use('/api/products', productsRoutes)
 app.use('/api/music', musicRoutes)
 app.use('/api/orders', ordersRoutes)
 app.use('/api/favorites', favoritesRoutes)
+app.use('/api/reviews', reviewsRoutes)
+
+// Test route to verify admin routes are registered
+app.get('/api/admin/test', (req, res) => {
+  res.json({ message: 'Admin routes are registered' })
+})
+
+app.use('/api/admin', adminRoutes)
+
+// Debug: Log all registered routes
+console.log('📋 Registered routes:')
+console.log('  - /api/auth')
+console.log('  - /api/posts')
+console.log('  - /api/products')
+console.log('  - /api/music')
+console.log('  - /api/orders')
+console.log('  - /api/favorites')
+console.log('  - /api/admin (with middleware)')
+console.log('  - /api/admin/test (without middleware)')
 
 // Запуск сервера
 app.listen(PORT, () => {

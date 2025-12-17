@@ -22,7 +22,7 @@
 }
 
 .buy-modal-content {
-  background: white;
+  background: linear-gradient(135deg, #ffffff 0%, #f3f7ff 100%);
   border-radius: 15px;
   padding: 30px;
   max-width: 500px;
@@ -47,8 +47,10 @@
 
 .buy-modal-content h2 {
   margin: 0 0 20px 0;
-  color: #333;
+  color: #1E90FF !important;
   font-size: 24px;
+  text-align: center;
+  font-weight: 700;
 }
 
 .buy-modal-product {
@@ -84,7 +86,8 @@
 }
 
 .buy-modal-field input,
-.buy-modal-field textarea {
+.buy-modal-field textarea,
+.buy-modal-field select {
   width: 100%;
   padding: 12px;
   border: 2px solid #ddd;
@@ -93,16 +96,19 @@
   font-family: inherit;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  background: #fff;
 }
 
 .buy-modal-field input:focus,
-.buy-modal-field textarea:focus {
+.buy-modal-field textarea:focus,
+.buy-modal-field select:focus {
   outline: none;
   border-color: #1E90FF;
 }
 
 .buy-modal-field input.error,
-.buy-modal-field textarea.error {
+.buy-modal-field textarea.error,
+.buy-modal-field select.error {
   border-color: #dc3545;
 }
 

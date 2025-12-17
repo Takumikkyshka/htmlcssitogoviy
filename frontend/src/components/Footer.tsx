@@ -37,18 +37,22 @@ function Footer() {
         <div className="footer-card">
           <h4 className="footer-subtitle">Время работы технической поддержки:</h4>
           <table className="footer-table">
-            <tr>
-              <th className="table-header">Дни недели</th>
-              <th className="table-header">Время работы</th>
-            </tr>
-            <tr>
-              <th className="table-header">ПН-ПТ</th>
-              <th className="table-data">6:00-23:00</th>
-            </tr>
-            <tr>
-              <th className="table-header">СБ-ВС</th>
-              <th className="table-data">10:00-22:00</th>
-            </tr>
+            <thead>
+              <tr>
+                <th className="table-header">Дни недели</th>
+                <th className="table-header">Время работы</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="table-header">ПН-ПТ</td>
+                <td className="table-data">6:00-23:00</td>
+              </tr>
+              <tr>
+                <td className="table-header">СБ-ВС</td>
+                <td className="table-data">10:00-22:00</td>
+              </tr>
+            </tbody>
           </table>
         </div>
 

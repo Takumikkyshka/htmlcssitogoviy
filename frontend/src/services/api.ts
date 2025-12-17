@@ -55,6 +55,11 @@ class ApiService {
         return { data: data.data }
       }
 
+      // Для auth endpoints (login/register) - ответ имеет структуру { message, token, user }
+      if (data.token && data.user) {
+        return { data: { token: data.token, user: data.user } }
+      }
+
       return { data }
     } catch (error) {
       return {
@@ -79,8 +84,9 @@ class ApiService {
   }
 
   // Posts endpoints
-  async getPosts() {
-    return this.request<any[]>('/posts')
+  async getPosts(productId?: number) {
+    const url = productId ? `/posts?product_id=${productId}` : '/posts'
+    return this.request<any[]>(url)
   }
 
   async getPostById(id: number) {
@@ -96,6 +102,10 @@ class ApiService {
     return this.request<any>(`/products/${id}`)
   }
 
+  async getProductReviews(id: number) {
+    return this.request<any[]>(`/products/${id}/reviews`)
+  }
+
   // Music endpoints
   async getMusic() {
     return this.request<any[]>('/music')
@@ -105,11 +115,23 @@ class ApiService {
     return this.request<any>(`/music/${id}`)
   }
 
-  async createPost(title: string, content: string, category?: string) {
+  async createPost(title: string, content: string, category?: string, productId?: number) {
     return this.request<any>('/posts', {
       method: 'POST',
-      body: JSON.stringify({ title, content, category }),
+      body: JSON.stringify({ title, content, category, product_id: productId }),
     })
+  }
+
+  // Reviews endpoints (for regular users)
+  async createReview(productId: number, rating: number, text: string) {
+    return this.request<any>('/reviews', {
+      method: 'POST',
+      body: JSON.stringify({ productId, rating, text }),
+    })
+  }
+
+  async getProductReviews(productId: number) {
+    return this.request<any[]>(`/reviews/product/${productId}`)
   }
 
   async updatePost(id: number, title: string, content: string, category?: string) {
@@ -137,6 +159,12 @@ class ApiService {
     })
   }
 
+  async cancelOrder(orderId: number) {
+    return this.request<any>(`/orders/${orderId}/cancel`, {
+      method: 'PATCH',
+    })
+  }
+
   // Favorites endpoints
   async getFavorites() {
     return this.request<any[]>('/favorites')
@@ -157,6 +185,149 @@ class ApiService {
 
   async checkFavorite(productId: number) {
     return this.request<{ isFavorite: boolean }>(`/favorites/check/${productId}`)
+  }
+
+  // Admin endpoints - Products
+  async adminGetProducts() {
+    return this.request<any[]>('/admin/products')
+  }
+
+  async adminGetProductById(id: number) {
+    return this.request<any>(`/admin/products/${id}`)
+  }
+
+  async adminCreateProduct(product: any) {
+    return this.request<any>('/admin/products', {
+      method: 'POST',
+      body: JSON.stringify(product),
+    })
+  }
+
+  async adminUpdateProduct(id: number, product: any) {
+    return this.request<any>(`/admin/products/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(product),
+    })
+  }
+
+  async adminDeleteProduct(id: number) {
+    return this.request<{ message: string }>(`/admin/products/${id}`, {
+      method: 'DELETE',
+    })
+  }
+
+  // Admin endpoints - Orders
+  async adminGetOrders(filters?: { status?: string; userId?: number; productId?: number }) {
+    const params = new URLSearchParams()
+    if (filters?.status) params.append('status', filters.status)
+    if (filters?.userId) params.append('userId', filters.userId.toString())
+    if (filters?.productId) params.append('productId', filters.productId.toString())
+    const query = params.toString()
+    return this.request<any[]>(`/admin/orders${query ? `?${query}` : ''}`)
+  }
+
+  async adminGetOrderById(id: number) {
+    return this.request<any>(`/admin/orders/${id}`)
+  }
+
+  async adminUpdateOrderStatus(id: number, status: string) {
+    return this.request<any>(`/admin/orders/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    })
+  }
+
+  // Admin endpoints - Users
+  async adminGetUsers(filters?: { search?: string; role?: string }) {
+    const params = new URLSearchParams()
+    if (filters?.search) params.append('search', filters.search)
+    if (filters?.role) params.append('role', filters.role)
+    const query = params.toString()
+    return this.request<any[]>(`/admin/users${query ? `?${query}` : ''}`)
+  }
+
+  async adminGetUserById(id: number) {
+    return this.request<any>(`/admin/users/${id}`)
+  }
+
+  async adminUpdateUser(id: number, user: any) {
+    return this.request<any>(`/admin/users/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(user),
+    })
+  }
+
+  async adminResetUserPassword(id: number, newPassword: string) {
+    return this.request<{ message: string }>(`/admin/users/${id}/reset-password`, {
+      method: 'POST',
+      body: JSON.stringify({ newPassword }),
+    })
+  }
+
+  async adminToggleUserBlock(id: number) {
+    return this.request<any>(`/admin/users/${id}/block`, {
+      method: 'PATCH',
+    })
+  }
+
+  // Admin endpoints - Reviews
+  async adminGetReviews(filters?: { productId?: number; userId?: number; approved?: boolean; rating?: number }) {
+    const params = new URLSearchParams()
+    if (filters?.productId) params.append('productId', filters.productId.toString())
+    if (filters?.userId) params.append('userId', filters.userId.toString())
+    if (filters?.approved !== undefined) params.append('approved', filters.approved.toString())
+    if (filters?.rating) params.append('rating', filters.rating.toString())
+    const query = params.toString()
+    return this.request<any[]>(`/admin/reviews${query ? `?${query}` : ''}`)
+  }
+
+  async adminGetReviewById(id: number) {
+    return this.request<any>(`/admin/reviews/${id}`)
+  }
+
+  async adminToggleReviewApproval(id: number, approved: boolean) {
+    return this.request<any>(`/admin/reviews/${id}/approval`, {
+      method: 'PATCH',
+      body: JSON.stringify({ approved }),
+    })
+  }
+
+  async adminAddReviewResponse(id: number, adminResponse: string) {
+    return this.request<any>(`/admin/reviews/${id}/response`, {
+      method: 'POST',
+      body: JSON.stringify({ admin_response: adminResponse }),
+    })
+  }
+
+  async adminDeleteReview(id: number) {
+    return this.request<{ message: string }>(`/admin/reviews/${id}`, {
+      method: 'DELETE',
+    })
+  }
+
+  async adminGenerateReviews() {
+    return this.request<any>('/admin/reviews/generate', {
+      method: 'POST',
+    })
+  }
+
+  async adminCreateReview(userId: number, productId: number, rating: number, text: string) {
+    return this.request<any>('/admin/reviews', {
+      method: 'POST',
+      body: JSON.stringify({ userId, productId, rating, text }),
+    })
+  }
+
+  // Admin endpoints - Analytics
+  async adminGetAnalytics() {
+    return this.request<any>('/admin/analytics')
+  }
+
+  async adminGetSalesChart(period?: 'day' | 'week' | 'month') {
+    const params = new URLSearchParams()
+    if (period) params.append('period', period)
+    const query = params.toString()
+    return this.request<any[]>(`/admin/analytics/sales-chart${query ? `?${query}` : ''}`)
   }
 }
 

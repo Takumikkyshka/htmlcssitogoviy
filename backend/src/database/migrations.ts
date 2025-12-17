@@ -396,6 +396,111 @@ const migrations: Migration[] = [
         })
       })
     }
+  },
+  {
+    name: '008_add_admin_and_reviews',
+    up: async () => {
+      return new Promise((resolve, reject) => {
+        db.serialize(() => {
+          // Добавляем поле role в users (если его нет)
+          db.get("PRAGMA table_info(users)", [], (err, rows: any) => {
+            if (err) return reject(err)
+            
+            const hasRoleColumn = Array.isArray(rows) && rows.some((row: any) => row.name === 'role')
+            
+            if (!hasRoleColumn) {
+              db.run('ALTER TABLE users ADD COLUMN role TEXT DEFAULT "user"', (err) => {
+                if (err) return reject(err)
+                console.log('✅ Поле role добавлено в users')
+              })
+            }
+            
+            // Добавляем поле review_count в products (если его нет)
+            db.get("PRAGMA table_info(products)", [], (err, rows: any) => {
+              if (err) return reject(err)
+              
+              const hasReviewCountColumn = Array.isArray(rows) && rows.some((row: any) => row.name === 'review_count')
+              
+              if (!hasReviewCountColumn) {
+                db.run('ALTER TABLE products ADD COLUMN review_count INTEGER DEFAULT 0', (err) => {
+                  if (err) return reject(err)
+                  console.log('✅ Поле review_count добавлено в products')
+                })
+              }
+              
+              // Создаем таблицу reviews
+              db.run(`
+                CREATE TABLE IF NOT EXISTS reviews (
+                  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  user_id INTEGER NOT NULL,
+                  product_id INTEGER NOT NULL,
+                  rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5),
+                  text TEXT NOT NULL,
+                  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                  approved INTEGER DEFAULT 0,
+                  likes INTEGER DEFAULT 0,
+                  admin_response TEXT,
+                  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+                )
+              `, (err) => {
+                if (err) return reject(err)
+                console.log('✅ Таблица reviews создана')
+                
+                // Создаем индексы для reviews
+                db.run('CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON reviews(product_id)', (err) => {
+                  if (err) return reject(err)
+                  db.run('CREATE INDEX IF NOT EXISTS idx_reviews_user_id ON reviews(user_id)', (err) => {
+                    if (err) return reject(err)
+                    db.run('CREATE INDEX IF NOT EXISTS idx_reviews_approved ON reviews(approved)', (err) => {
+                      if (err) return reject(err)
+                      resolve()
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    },
+    down: async () => {
+      return new Promise((resolve, reject) => {
+        db.serialize(() => {
+          db.run('DROP TABLE IF EXISTS reviews', (err) => {
+            if (err) return reject(err)
+            resolve()
+          })
+        })
+      })
+    }
+  },
+  {
+    name: '009_add_product_id_to_posts',
+    up: async () => {
+      return new Promise((resolve, reject) => {
+        db.get("PRAGMA table_info(posts)", [], (err, rows: any) => {
+          if (err) return reject(err)
+          
+          const hasProductIdColumn = Array.isArray(rows) && rows.some((row: any) => row.name === 'product_id')
+          
+          if (!hasProductIdColumn) {
+            db.run('ALTER TABLE posts ADD COLUMN product_id INTEGER', (err) => {
+              if (err) return reject(err)
+              console.log('✅ Поле product_id добавлено в posts')
+              resolve()
+            })
+          } else {
+            resolve()
+          }
+        })
+      })
+    },
+    down: async () => {
+      return new Promise((resolve) => {
+        resolve()
+      })
+    }
   }
 ]
 

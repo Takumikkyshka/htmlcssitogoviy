@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import './AuthModal.css'
 
@@ -17,6 +17,13 @@ function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalProps) {
   const [loading, setLoading] = useState(false)
 
   const { login, register } = useAuth()
+
+  useEffect(() => {
+    if (isOpen) {
+      setMode(initialMode)
+      setError('')
+    }
+  }, [initialMode, isOpen])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

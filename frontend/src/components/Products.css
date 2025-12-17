@@ -97,6 +97,11 @@
     overflow: hidden;
 }
 
+.product-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .products p {
     margin: 8px 10px;
     color: #666;
@@ -169,6 +174,42 @@
     background: linear-gradient(135deg, #1873CC, #0099CC);
     transform: scale(1.05);
     box-shadow: 0 6px 20px rgba(30, 144, 255, 0.5);
+}
+
+/* Тост-уведомление при добавлении в корзину */
+.cart-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 80px;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    padding: 10px 18px;
+    border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 1600;
+    animation: cart-toast-slide 1.5s ease-in-out forwards;
+}
+
+@keyframes cart-toast-slide {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    15% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    80% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+    }
 }
 
 .favorite-btn:hover {
